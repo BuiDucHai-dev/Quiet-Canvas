@@ -1,5 +1,10 @@
-import SwiftUI
+//
+//  SettingsView.swift
+//  Coloring-PaintTheNumber
+//
+
 import StoreKit
+import SwiftUI
 
 struct SettingsView: View {
     private static let highlightPresets: [(name: String, hex: String)] = [
@@ -12,6 +17,7 @@ struct SettingsView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.store) private var store
     @AppStorage("numberSize") private var numberSize = 0
     @AppStorage("highlight") private var highlight = true
     @AppStorage("highlightHex") private var highlightHex = "#475569"
@@ -22,7 +28,6 @@ struct SettingsView: View {
     @AppStorage("reminderMinutes") private var reminderMinutes = 20 * 60
     @State private var paywall = false
     @State private var confirmReset = false
-    private var store: Store { .shared }
 
     var body: some View {
         NavigationStack {
@@ -154,40 +159,5 @@ struct SettingsView: View {
                 .frame(width: 34, height: 34).background(color, in: RoundedRectangle(cornerRadius: 8))
         }
         .padding(.vertical, 2)
-    }
-}
-
-/// Placeholder until StoreKit 2 is wired up. The approved design is kept in Assets ("PaywallDesign")
-/// and docs/design/03_paywall.png: yearly plan with 7-day trial (default) + weekly, restore, terms, privacy.
-struct PaywallView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Color.paper.ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: 16) {
-                    Text("Premium is coming soon").font(.heading).foregroundStyle(.ink).padding(.top, 70)
-                    Image("PaywallDesign").resizable().scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 24))
-                        .overlay(RoundedRectangle(cornerRadius: 24).strokeBorder(.line))
-                        .padding(.horizontal, 40)
-                        .accessibilityLabel("Paywall design preview")
-                    #if DEBUG
-                    Button("Unlock everything (debug)") { Store.shared.premium = true; dismiss() }
-                        .buttonStyle(PrimaryButton()).padding(.horizontal, 20)
-                    if Store.shared.premium {
-                        Button("Turn Premium off (debug)") { Store.shared.premium = false; dismiss() }
-                            .buttonStyle(SecondaryButton()).padding(.horizontal, 20)
-                    }
-                    #endif
-                }
-                .padding(.bottom, 24)
-            }
-            Button { dismiss() } label: { CircleIcon(systemName: "xmark") }
-                .buttonStyle(.pressable)
-                .accessibilityLabel("Close")
-                .padding(20)
-        }
     }
 }

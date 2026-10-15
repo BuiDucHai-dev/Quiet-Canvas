@@ -1,3 +1,8 @@
+//
+//  ContentView.swift
+//  Coloring-PaintTheNumber
+//
+
 import SwiftUI
 
 /// App-wide presentation state: the painting cover, locked-picture preview and paywall.
@@ -10,9 +15,14 @@ final class Router {
     var paywall = false
     /// Painting to open once the preview sheet has finished dismissing.
     var afterPreview: Catalog.Entry?
+    @ObservationIgnored private let store: Store
+
+    init(store: Store = .shared) {
+        self.store = store
+    }
 
     func open(_ e: Catalog.Entry) {
-        if Store.shared.isUnlocked(e) { painting = e } else { preview = e }
+        if store.isUnlocked(e) { painting = e } else { preview = e }
     }
 
     func explore(theme: String? = nil) {
@@ -24,7 +34,7 @@ final class Router {
 struct ContentView: View {
     @AppStorage("onboarded") private var onboarded = false
     @State private var router = Router()
-    private var store: Store { .shared }
+    @Environment(\.store) private var store
 
     var body: some View {
         if !onboarded {

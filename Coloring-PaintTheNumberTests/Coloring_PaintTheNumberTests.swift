@@ -125,4 +125,44 @@ final class Coloring_PaintTheNumberTests: XCTestCase {
         let sumTotals = loaded.template.palette.reduce(0) { $0 + model.total($1.id) }
         XCTAssertEqual(sumTotals, entry.regions)
     }
+
+    func testCleanArchitectureUseCasesAndInMemoryRepository() {
+        final class InMemoryProgressRepository: ProgressRepository {
+            var meta: [String: WorkMeta] = [:]
+            var filled: [String: Set<Int>] = [:]
+            var challengeDays: Set<String> = []
+            var bestStreak = 0
+            var premium = false
+            var installDay = Calendar.current.startOfDay(for: .now)
+
+            func loadMeta() -> [String: WorkMeta] { meta }
+            func saveMeta(_ meta: [String: WorkMeta]) { self.meta = meta }
+            func loadFilled(_ id: String) -> Set<Int> { filled[id] ?? [] }
+            func saveFilled(_ set: Set<Int>, for id: String) { filled[id] = set }
+            func removeFilled(_ id: String) { filled[id] = nil }
+            func loadChallengeDays() -> Set<String> { challengeDays }
+            func saveChallengeDays(_ days: Set<String>) { challengeDays = days }
+            func loadBestStreak() -> Int { bestStreak }
+            func saveBestStreak(_ streak: Int) { bestStreak = streak }
+            func loadPremium() -> Bool { premium }
+            func savePremium(_ premium: Bool) { self.premium = premium }
+            func loadOrCreateInstallDay(calendar: Calendar) -> Date { installDay }
+            func resetChallengeProgress() { challengeDays = []; bestStreak = 0 }
+        }
+
+        let repo = InMemoryProgressRepository()
+        let store = Store(repository: repo)
+        let todayEntry = store.challenge(on: .now)
+        XCTAssertEqual(store.status(todayEntry), .new)
+
+        store.save(todayEntry, filled: Set(1...todayEntry.regions), total: todayEntry.regions)
+        XCTAssertEqual(store.status(todayEntry), .done)
+        XCTAssertTrue(repo.challengeDays.contains(Day.key(.now)))
+        XCTAssertEqual(store.bestStreak, 1)
+
+        let works = LibraryUseCases.myWorks(catalog: Catalog.shared, meta: store.meta, status: store.status)
+        XCTAssertEqual(works.completed.map(\.id), [todayEntry.id])
+        XCTAssertTrue(works.inProgress.isEmpty)
+    }
 }
+

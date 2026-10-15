@@ -1,3 +1,8 @@
+//
+//  OnboardingView.swift
+//  Coloring-PaintTheNumber
+//
+
 import SwiftUI
 
 /// First launch: welcome, then pick favorite themes (shown first in the Library).

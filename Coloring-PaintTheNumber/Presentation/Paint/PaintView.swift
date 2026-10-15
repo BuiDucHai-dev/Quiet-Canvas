@@ -1,5 +1,9 @@
+//
+//  PaintView.swift
+//  Coloring-PaintTheNumber
+//
+
 import SwiftUI
-import Photos
 
 #if DEBUG
 /// TEMP for testing the finish sequence: opening an unfinished picture pre-fills every shape except the largest one.
@@ -10,6 +14,7 @@ private let debugLeaveOneShape = false
 struct PaintView: View {
     @State var entry: Catalog.Entry
     @State private var model: PaintModel?
+    @Environment(\.store) private var store
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -33,7 +38,7 @@ struct PaintView: View {
         .task(id: entry.id) {
             model = nil
             if let loaded = await Template.load(entry.id) {
-                let m = PaintModel(entry: entry, loaded: loaded)
+                let m = PaintModel(entry: entry, loaded: loaded, store: store)
                 #if DEBUG
                 if debugLeaveOneShape, !m.done { m.debugFillAllButOne() }
                 #endif
@@ -48,6 +53,7 @@ struct PaintView: View {
 private struct Board: View {
     let model: PaintModel
     let next: (Catalog.Entry) -> Void
+    @Environment(\.store) private var store
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var phase
     @AppStorage("highlight") private var highlight = true
@@ -123,8 +129,7 @@ private struct Board: View {
     }
 
     private func finalImage() -> UIImage {
-        let path = Bundle.main.path(forResource: "\(model.entry.id)_art", ofType: "jpg")
-        return path.flatMap(UIImage.init(contentsOfFile:)) ?? model.render(side: 1536)
+        BundleCatalogRepository.shared.finalArtwork(for: model.entry.id) ?? model.render(side: 1536)
     }
 
     /// Last shape filled: ease back to the whole picture, fade the original artwork in, then show the completion screen.
@@ -141,17 +146,17 @@ private struct Board: View {
     }
 
     private var minutesSpent: Int {
-        let seconds = (Store.shared.meta[model.entry.id]?.seconds ?? 0) + Date.now.timeIntervalSince(sessionStart)
+        let seconds = (store.meta[model.entry.id]?.seconds ?? 0) + Date.now.timeIntervalSince(sessionStart)
         return max(1, Int(seconds / 60))
     }
 
     private func persist() {
-        Store.shared.addTime(model.entry.id, Date.now.timeIntervalSince(sessionStart))
+        store.addTime(model.entry.id, Date.now.timeIntervalSince(sessionStart))
         sessionStart = .now
-        Store.shared.setPreview(model.entry.id, model.filled.isEmpty ? nil : model.render(side: 600))
+        store.setPreview(model.entry.id, model.filled.isEmpty ? nil : model.render(side: 600))
     }
 
-    // MARK: top bar
+    // MARK: - Top bar
 
     private var topBar: some View {
         HStack(spacing: 10) {
@@ -183,7 +188,7 @@ private struct Board: View {
         .overlay(alignment: .bottom) { Rectangle().fill(.line).frame(height: 1) }
     }
 
-    // MARK: canvas
+    // MARK: - Canvas
 
     private func layout(_ size: CGSize) -> (fit: CGFloat, origin: CGPoint) {
         let t = model.template
@@ -426,7 +431,7 @@ private struct Board: View {
         }
     }
 
-    // MARK: palette
+    // MARK: - Palette
 
     private var palette: some View {
         ScrollViewReader { proxy in
@@ -481,131 +486,5 @@ private struct Board: View {
         .opacity(left == 0 ? 0.45 : 1)
         .accessibilityLabel(left == 0 ? "Color \(sw.id), done" : "Color \(sw.id), \(left) of \(total) left")
         .accessibilityAddTraits(on ? .isSelected : [])
-    }
-}
-
-/// Shown when the last shape is filled (or when opening a finished picture).
-private struct CompletionView: View {
-    let model: PaintModel
-    let image: UIImage
-    let minutes: Int
-    let close: () -> Void
-    let next: (Catalog.Entry) -> Void
-    @State private var saved = false
-    @State private var saveError = false
-    @State private var paywall = false
-    @AppStorage("reminder") private var reminder = false
-    @AppStorage("reminderAsked") private var reminderAsked = false
-    @AppStorage("reminderMinutes") private var reminderMinutes = 20 * 60
-    private var store: Store { .shared }
-
-    var body: some View {
-        let entry = model.entry
-        let isChallenge = entry.id == store.challenge(on: .now).id && store.challengeDays.contains(Day.key(.now))
-        let picture = Image(uiImage: image)
-        ScrollView {
-            VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                    Button(action: close) { CircleIcon(systemName: "xmark") }
-                        .buttonStyle(.pressable)
-                        .accessibilityLabel("Close")
-                }
-                if isChallenge {
-                    Label("\(store.streak.current) day streak", systemImage: "flame.fill")
-                        .font(.body.weight(.semibold)).foregroundStyle(.accent)
-                        .padding(.horizontal, 16).padding(.vertical, 8)
-                        .background(.accentSoft, in: Capsule())
-                }
-                Text("Beautiful work").font(.display).foregroundStyle(.ink).padding(.top, 14)
-                Text("\(entry.title) · \(model.template.regions.count) shapes · \(minutes) min")
-                    .font(.body).foregroundStyle(.ink2).padding(.top, 6)
-                picture.resizable().aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(8).background(.white, in: RoundedRectangle(cornerRadius: 24))
-                    .shadow(color: .black.opacity(0.08), radius: 8, y: 3)
-                    .frame(maxWidth: 360).padding(.top, 22)
-                    .accessibilityLabel(entry.title)
-                HStack(spacing: 12) {
-                    ShareLink(item: picture, preview: SharePreview(entry.title, image: picture)) {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                    }
-                    .buttonStyle(PrimaryButton())
-                    Button(action: saveToPhotos) {
-                        Label(saved ? "Saved" : "Save", systemImage: saved ? "checkmark" : "arrow.down.to.line")
-                    }
-                    .buttonStyle(SecondaryButton())
-                    .disabled(saved)
-                }
-                .padding(.top, 22)
-                if isChallenge && !reminder && !reminderAsked { reminderCard.padding(.top, 22) }
-                suggestions.padding(.top, 30)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 24)
-        }
-        .scrollIndicators(.hidden)
-        .background(.paper)
-        .alert("Unable to Save Photo", isPresented: $saveError) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Please allow Photos access in Settings to save your finished artwork.")
-        }
-        .fullScreenCover(isPresented: $paywall) { PaywallView() }
-    }
-
-    private func saveToPhotos() {
-        Task {
-            let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
-            guard status == .authorized || status == .limited else {
-                saveError = true
-                return
-            }
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-            withAnimation(.snappy(duration: 0.2)) { saved = true }
-        }
-    }
-
-    private var reminderCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("Come back tomorrow?", systemImage: "bell").font(.title3.weight(.semibold)).foregroundStyle(.ink)
-            Text("A gentle reminder each evening keeps your streak going.").font(.body).foregroundStyle(.ink2)
-            HStack {
-                Button("Remind me") {
-                    reminderAsked = true
-                    Task { reminder = await Reminder.schedule(minutes: reminderMinutes) }
-                }
-                .buttonStyle(PrimaryButton())
-                Button("Not now") { reminderAsked = true }.buttonStyle(SecondaryButton())
-            }
-        }
-        .padding(16)
-        .background(.surface, in: RoundedRectangle(cornerRadius: 20))
-    }
-
-    @ViewBuilder private var suggestions: some View {
-        let more = Catalog.shared.entries(in: model.entry.theme)
-            .filter { $0.id != model.entry.id && store.status($0) != .done }
-            .sorted { store.isUnlocked($0) && !store.isUnlocked($1) }
-            .prefix(3)
-        if !more.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Paint another").font(.heading).foregroundStyle(.ink)
-                    Spacer()
-                    Button("Library", action: close)
-                        .font(.body.weight(.semibold))
-                        .foregroundStyle(.accent)
-                        .frame(minHeight: 48)
-                        .contentShape(Rectangle())
-                }
-                HStack(alignment: .top, spacing: 12) {
-                    ForEach(Array(more)) { e in
-                        Button { store.isUnlocked(e) ? next(e) : (paywall = true) } label: { Thumb(entry: e) }
-                            .buttonStyle(.pressable)
-                    }
-                }
-            }
-        }
     }
 }

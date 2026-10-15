@@ -1,9 +1,14 @@
+//
+//  ChallengesView.swift
+//  Coloring-PaintTheNumber
+//
+
 import SwiftUI
 
 /// Daily challenge: today's picture, streak with one rest day per week, and this month's calendar.
 struct ChallengesView: View {
     @Environment(Router.self) private var router
-    private var store: Store { .shared }
+    @Environment(\.store) private var store
     private let cal = Calendar.current
 
     var body: some View {

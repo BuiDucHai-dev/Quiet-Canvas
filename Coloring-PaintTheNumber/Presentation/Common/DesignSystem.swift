@@ -1,3 +1,8 @@
+//
+//  DesignSystem.swift
+//  Coloring-PaintTheNumber
+//
+
 import SwiftUI
 
 // Quiet Canvas design tokens, direction A "Paper & Terracotta". Reference: docs/design/board.png
@@ -14,12 +19,6 @@ extension ShapeStyle where Self == Color {
     static var line: Color { Color(rgb: 0xE8E1D7) }
     static var success: Color { Color(rgb: 0x4E8B5F) }
     static var flame: Color { Color(rgb: 0xC86428) }
-}
-
-extension Color {
-    init(rgb: UInt32) {
-        self.init(red: Double(rgb >> 16 & 255) / 255, green: Double(rgb >> 8 & 255) / 255, blue: Double(rgb & 255) / 255)
-    }
 }
 
 extension Font {
@@ -133,7 +132,7 @@ struct Thumb: View {
     let entry: Catalog.Entry
     var caption = true
     var subtitle: String?
-    private var store: Store { .shared }
+    @Environment(\.store) private var store
 
     var body: some View {
         let status = store.status(entry)
