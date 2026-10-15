@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Quiet Canvas - Library</title>
+<!-- Google Fonts: Newsreader (Warm Serif) & Inter (Clean Neutral Body) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching Quiet Canvas Design System Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#fdf9f1",
+            "on-primary-container": "#8d3614",
+            "surface": "#ffffff",
+            "outline-variant": "#E8E1D7",
+            "secondary-fixed": "#ede0d6",
+            "error": "#a64542",
+            "on-primary-fixed-variant": "#9a401d",
+            "inverse-surface": "#0f0e0b",
+            "tertiary-container": "#b6f8c3",
+            "primary-container": "#ffdbcf",
+            "secondary-container": "#ede0d6",
+            "tertiary": "#4E8B5F",
+            "secondary-fixed-dim": "#dfd2c8",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#2B2622",
+            "on-tertiary-container": "#236039",
+            "background": "#FAF6F0",
+            "tertiary-fixed": "#b6f8c3",
+            "surface-container-highest": "#ece8db",
+            "on-tertiary-fixed": "#0a4d28",
+            "on-secondary-container": "#595049",
+            "primary-fixed-dim": "#ffc8b6",
+            "on-secondary-fixed-variant": "#635a52",
+            "on-surface": "#2B2622",
+            "on-error-container": "#752121",
+            "error-container": "#fe8983",
+            "on-primary": "#ffffff",
+            "surface-dim": "#e6e3d4",
+            "primary-fixed": "#ffdbcf",
+            "outline": "#bcb9ad",
+            "on-tertiary-fixed-variant": "#2e6b42",
+            "error-dim": "#4e0309",
+            "surface-container": "#f7f3ea",
+            "surface-bright": "#fffbff",
+            "on-primary-fixed": "#742403",
+            "tertiary-dim": "#26643c",
+            "secondary": "#6B625A",
+            "primary": "#B4532F",
+            "on-secondary-fixed": "#463e37",
+            "on-surface-variant": "#6B625A",
+            "primary-dim": "#8e3715",
+            "surface-tint": "#B4532F",
+            "surface-container-high": "#f1eee2",
+            "on-error": "#ffffff",
+            "inverse-on-surface": "#9f9d97",
+            "inverse-primary": "#fb8961",
+            "surface-variant": "#ece8db",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed-dim": "#a8e9b6",
+            "secondary-dim": "#5f574f"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "2xl": "1.25rem",
+            "3xl": "1.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Newsreader", "serif"],
+            "display": ["Newsreader", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Inter", "sans-serif"]
+          },
+          "boxShadow": {
+            "soft-card": "0 2px 10px rgba(43, 38, 34, 0.05)",
+            "subtle-elevated": "0 4px 16px rgba(43, 38, 34, 0.07)"
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* iOS Custom Smooth Scrolling & Touch Targets */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #FAF6F0;
+      color: #2B2622;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex justify-center font-body selection:bg-primary-container selection:text-primary">
+<!-- Mobile Frame Container (Max-W-md simulating authentic iOS viewport) -->
+<div class="w-full max-w-md bg-background min-h-screen relative flex flex-col pb-24 shadow-2xl">
+<!-- 1. Native iOS Status Bar -->
+<header class="pt-3 px-7 flex justify-between items-center text-on-surface font-semibold text-xs tracking-tight z-30 select-none">
+<span class="text-sm font-semibold tracking-tight">9:41</span>
+<!-- Dynamic Island pill representation -->
+<div class="w-24 h-5 bg-black/90 rounded-full mx-auto my-0.5"></div>
+<div class="flex items-center space-x-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[15px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[18px] rotate-90 inline-block" data-icon="battery_full">battery_full</span>
+</div>
+</header>
+<!-- 2. Navigation Top Bar (Shared Components: TopAppBar) -->
+<div class="px-5 pt-4 pb-2 flex justify-between items-end border-b border-outline-variant/30">
+<div>
+<p class="font-body text-xs font-medium uppercase tracking-wider text-secondary">Quiet Canvas</p>
+<h1 class="font-headline text-3xl font-normal text-on-surface tracking-tight mt-0.5">Good evening</h1>
+</div>
+<button aria-label="Settings" class="w-10 h-10 rounded-full bg-surface shadow-soft-card border border-outline-variant/40 flex items-center justify-center text-secondary hover:text-primary active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+</button>
+</div>
+<!-- Scrollable Canvas Area -->
+<main class="flex-1 overflow-y-auto no-scrollbar space-y-7 pt-4">
+<!-- 3. Premium Banner -->
+<section class="px-5">
+<div class="bg-surface-container-low border border-outline-variant/60 rounded-2xl p-3.5 flex items-center justify-between shadow-soft-card hover:border-primary/40 transition-colors duration-200 cursor-pointer">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-base material-symbols-fill" data-icon="crown" style="font-variation-settings: 'FILL' 1;">crown</span>
+</div>
+<div>
+<p class="font-body text-sm font-semibold text-on-surface">Unlock 80+ pictures</p>
+<p class="font-body text-xs text-secondary">Free 7-day trial • Unlimited color palettes</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+<!-- 4. "Continue painting" Section (Paint-by-number progress) -->
+<section class="space-y-3">
+<div class="px-5 flex items-center justify-between">
+<h2 class="font-headline text-xl text-on-surface font-medium">Continue painting</h2>
+<span class="text-xs text-secondary font-medium">In progress (3)</span>
+</div>
+<div class="flex overflow-x-auto no-scrollbar px-5 space-x-4 pb-2 snap-x scroll-pl-5">
+<!-- Continue Card 1: Ocean Friends -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<!-- Illustrated Paint-by-number Canvas (Partially colored marine scene with numbers) -->
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Colored segments -->
+<path d="M0,50 Q25,30 50,55 T100,45 L100,100 L0,100 Z" fill="#90BE6D" opacity="0.35"></path>
+<path d="M0,70 Q30,60 60,75 T100,65 L100,100 L0,100 Z" fill="#4D908E" opacity="0.4"></path>
+<circle cx="32" cy="40" fill="#F9C74F" opacity="0.6" r="14"></circle>
+<path d="M25,38 Q32,30 38,42 Q30,46 25,38 Z" fill="#F8961E" opacity="0.7"></path>
+<!-- Numbered wireframe uncolored segments -->
+<path d="M0,0 L100,0 L100,45 Q75,35 50,55 Q25,30 0,50 Z" fill="#FFFFFF" stroke="#D1CCC2" stroke-dasharray="2,1" stroke-width="0.8"></path>
+<circle cx="75" cy="25" fill="#FFFFFF" r="12" stroke="#C8C2B6" stroke-width="0.75"></circle>
+<path d="M68,22 Q75,16 82,25 Q74,30 68,22 Z" fill="none" stroke="#D1CCC2" stroke-width="0.7"></path>
+<!-- Guide numbers in uncolored areas -->
+<text fill="#8C847B" font-family="Inter" font-size="6" font-weight="600" text-anchor="middle" x="74" y="27">3</text>
+<text fill="#A8A096" font-family="Inter" font-size="5" text-anchor="middle" x="25" y="22">7</text>
+<text fill="#A8A096" font-family="Inter" font-size="5.5" text-anchor="middle" x="50" y="18">12</text>
+<text fill="#A8A096" font-family="Inter" font-size="5" text-anchor="middle" x="88" y="40">4</text>
+</svg>
+<!-- Progress Badge Ring -->
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-sm rounded-full p-1 shadow-sm flex items-center justify-center">
+<svg class="w-6 h-6 -rotate-90" viewbox="0 0 36 36">
+<path class="text-outline-variant/40" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="45, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="absolute text-[8px] font-semibold text-on-surface">45%</span>
+</div>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Ocean Friends</p>
+</article>
+<!-- Continue Card 2: Sleeping Cat -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<!-- Paint-by-number Canvas Sleeping Cat (Terracotta partial fill + numbers) -->
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Subtle warm colored ear and tail -->
+<path d="M25,45 Q35,30 45,45 Q40,55 25,45 Z" fill="#B4532F" opacity="0.65"></path>
+<path d="M22,50 Q15,65 30,78 Q22,70 20,55 Z" fill="#DE7A53" opacity="0.5"></path>
+<!-- Uncolored body contours with numbers -->
+<ellipse cx="55" cy="58" fill="#FFFFFF" rx="28" ry="20" stroke="#D1CCC2" stroke-width="0.8"></ellipse>
+<circle cx="45" cy="48" fill="#FFFFFF" r="16" stroke="#C8C2B6" stroke-width="0.75"></circle>
+<path d="M48,34 L58,28 L56,40 Z" fill="#FFFFFF" stroke="#C8C2B6" stroke-width="0.75"></path>
+<!-- Uncolored numbered guide markings -->
+<text fill="#8C847B" font-family="Inter" font-size="6" font-weight="600" text-anchor="middle" x="56" y="58">2</text>
+<text fill="#A8A096" font-family="Inter" font-size="5" text-anchor="middle" x="70" y="56">5</text>
+<text fill="#A8A096" font-family="Inter" font-size="5" text-anchor="middle" x="52" y="36">8</text>
+<text fill="#A8A096" font-family="Inter" font-size="5" text-anchor="middle" x="40" y="60">1</text>
+</svg>
+<!-- Progress Badge Ring -->
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-sm rounded-full p-1 shadow-sm flex items-center justify-center">
+<svg class="w-6 h-6 -rotate-90" viewbox="0 0 36 36">
+<path class="text-outline-variant/40" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="12, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="absolute text-[8px] font-semibold text-on-surface">12%</span>
+</div>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Sleeping Cat</p>
+</article>
+<!-- Continue Card 3: Sunflower Field -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<!-- Sunflower 80% colored -->
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Sky backdrop -->
+<rect fill="#A0C4E2" height="40" opacity="0.35" width="100"></rect>
+<!-- Colored golden petals and center -->
+<circle cx="50" cy="50" fill="#5F3B20" opacity="0.8" r="18"></circle>
+<path d="M50,22 L55,34 L50,30 L45,34 Z" fill="#E9C46A"></path>
+<path d="M68,32 L60,40 L64,36 Z" fill="#F4A261"></path>
+<path d="M78,50 L66,54 L68,48 Z" fill="#E9C46A"></path>
+<path d="M68,68 L58,60 L62,64 Z" fill="#F4A261"></path>
+<path d="M50,78 L45,66 L55,66 Z" fill="#E76F51"></path>
+<path d="M32,68 L40,60 L36,64 Z" fill="#E9C46A"></path>
+<path d="M22,50 L34,46 L34,54 Z" fill="#F4A261"></path>
+<!-- Green leaves -->
+<path d="M10,80 Q30,70 45,95 Q25,98 10,80 Z" fill="#4E8B5F" opacity="0.7"></path>
+<path d="M90,80 Q70,72 55,95 Q75,98 90,80 Z" fill="#3D704C" opacity="0.7"></path>
+<!-- Unfinished 20% area on top left -->
+<path d="M32,32 L40,40 L36,36 Z" fill="#FFFFFF" stroke="#C8C2B6" stroke-width="0.75"></path>
+<text fill="#8C847B" font-family="Inter" font-size="5" font-weight="600" text-anchor="middle" x="35" y="34">9</text>
+</svg>
+<!-- Progress Badge Ring -->
+<div class="absolute top-3 right-3 bg-surface/90 backdrop-blur-sm rounded-full p-1 shadow-sm flex items-center justify-center">
+<svg class="w-6 h-6 -rotate-90" viewbox="0 0 36 36">
+<path class="text-outline-variant/40" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="80, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="absolute text-[8px] font-semibold text-on-surface">80%</span>
+</div>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Sunflower Field</p>
+</article>
+</div>
+</section>
+<!-- 5. "New this week" Section -->
+<section class="space-y-3">
+<div class="px-5 flex items-center justify-between">
+<h2 class="font-headline text-xl text-on-surface font-medium">New this week</h2>
+<button class="text-xs font-medium text-primary hover:text-primary-dim tracking-tight">See all</button>
+</div>
+<div class="flex overflow-x-auto no-scrollbar px-5 space-x-3.5 pb-2 snap-x scroll-pl-5">
+<!-- New 1: Lighthouse Dawn -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#FFFBF5]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Dawn gradient impression -->
+<rect fill="#FBE8D3" height="60" width="100"></rect>
+<circle cx="50" cy="55" fill="#F7CAD0" opacity="0.5" r="24"></circle>
+<!-- Lighthouse cliff -->
+<path d="M30,100 L45,55 L55,55 L70,100 Z" fill="#EDE0D4" stroke="#8C847B" stroke-width="0.6"></path>
+<rect fill="#B4532F" height="7" opacity="0.8" width="8" x="46" y="48"></rect>
+<polygon fill="#6B625A" points="50,42 45,48 55,48"></polygon>
+<path d="M0,75 Q40,65 100,75 L100,100 L0,100 Z" fill="#688B9A" opacity="0.35"></path>
+</svg>
+<!-- "NEW" Pill Badge -->
+<span class="absolute top-3 left-3 bg-primary text-on-primary text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full shadow-sm">NEW</span>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Lighthouse Dawn</p>
+</article>
+<!-- New 2: Cozy Reading Nook -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#F7F3EA]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Armchair -->
+<rect fill="#DEB887" height="35" opacity="0.6" rx="8" stroke="#8C847B" stroke-width="0.5" width="50" x="25" y="45"></rect>
+<rect fill="#DEB887" height="28" opacity="0.75" rx="6" width="34" x="33" y="35"></rect>
+<!-- Botanical potted monstera leaf -->
+<path d="M75,70 Q85,45 70,35 Q60,50 72,70" fill="#4E8B5F" opacity="0.7"></path>
+<line stroke="#3D704C" stroke-width="0.7" x1="72" x2="80" y1="70" y2="40"></line>
+<!-- Floor lamp with warm light -->
+<line stroke="#6B625A" stroke-width="0.8" x1="20" x2="20" y1="85" y2="30"></line>
+<path d="M12,30 L28,30 L24,20 L16,20 Z" fill="#F4A261" opacity="0.6"></path>
+</svg>
+<span class="absolute top-3 left-3 bg-primary text-on-primary text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full shadow-sm">NEW</span>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Cozy Reading Nook</p>
+</article>
+<!-- New 3: Botanical Mandala -->
+<article class="flex-shrink-0 w-36 snap-start group cursor-pointer">
+<div class="w-36 h-36 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#FCF8F2]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Geometric Zen symmetrical floral mandala -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#D1CCC2" stroke-dasharray="2,2" stroke-width="0.7"></circle>
+<circle cx="50" cy="50" fill="#CCD5AE" opacity="0.35" r="26"></circle>
+<circle cx="50" cy="50" fill="#E29578" opacity="0.4" r="14"></circle>
+<circle cx="50" cy="50" fill="#B4532F" opacity="0.6" r="6"></circle>
+<!-- Petals in 8 directions -->
+<g fill="none" stroke="#6B625A" stroke-width="0.6">
+<path d="M50,15 Q55,30 50,38 Q45,30 50,15 Z" fill="#FAEDCD" opacity="0.8"></path>
+<path d="M50,85 Q55,70 50,62 Q45,70 50,85 Z" fill="#FAEDCD" opacity="0.8"></path>
+<path d="M15,50 Q30,55 38,50 Q30,45 15,50 Z" fill="#FAEDCD" opacity="0.8"></path>
+<path d="M85,50 Q70,55 62,50 Q70,45 85,50 Z" fill="#FAEDCD" opacity="0.8"></path>
+</g>
+</svg>
+<span class="absolute top-3 left-3 bg-primary text-on-primary text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full shadow-sm">NEW</span>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Botanical Mandala</p>
+</article>
+</div>
+</section>
+<!-- 6. "Quick 10-minute picks" Section -->
+<section class="space-y-3">
+<div class="px-5 flex items-center justify-between">
+<div>
+<h2 class="font-headline text-xl text-on-surface font-medium">Quick 10-minute picks</h2>
+<p class="text-xs text-secondary mt-0.5">Gentle, low complexity for a peaceful pause</p>
+</div>
+</div>
+<div class="flex overflow-x-auto no-scrollbar px-5 space-x-3.5 pb-2 snap-x scroll-pl-5">
+<!-- Quick Pick 1: Single Peony (Difficulty: 1/3) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Large, calm Peony bloom -->
+<circle cx="50" cy="48" fill="#F8EDEB" r="28" stroke="#E8D5D1" stroke-width="0.8"></circle>
+<path d="M40,42 Q50,30 60,42 Q50,48 40,42 Z" fill="#FCD5CE" opacity="0.7"></path>
+<path d="M35,50 Q50,62 65,50 Q52,58 35,50 Z" fill="#FFB5A7" opacity="0.6"></path>
+<path d="M48,76 Q50,86 52,98" stroke="#4E8B5F" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M50,82 Q65,75 60,68" fill="#CCD5AE" opacity="0.7" stroke="#4E8B5F" stroke-width="1.8"></path>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Single Peony</p>
+<!-- 3 Dots Difficulty Indicator (1 Filled, 2 Empty) -->
+<div aria-label="Difficulty level 1 of 3" class="flex items-center space-x-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="text-[10px] text-secondary ml-1 font-normal">Easy</span>
+</div>
+</article>
+<!-- Quick Pick 2: Teacup & Lemon (Difficulty: 1/3) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Ceramic Teacup -->
+<ellipse cx="48" cy="78" fill="#E8E1D7" rx="28" ry="7"></ellipse>
+<path d="M26,52 Q26,75 48,75 Q70,75 70,52 Z" fill="#F4F1EA" stroke="#BCB9AD" stroke-width="0.8"></path>
+<path d="M70,56 Q78,56 78,65 Q78,74 68,72" fill="none" stroke="#BCB9AD" stroke-width="1.2"></path>
+<!-- Lemon slice resting on saucer -->
+<circle cx="30" cy="74" fill="#FFE382" r="11" stroke="#E9C46A" stroke-width="0.8"></circle>
+<path d="M30,64 L30,84 M20,74 L40,74" stroke="#FFF7D6" stroke-width="0.8"></path>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Teacup &amp; Lemon</p>
+<div aria-label="Difficulty level 1 of 3" class="flex items-center space-x-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="text-[10px] text-secondary ml-1 font-normal">Easy</span>
+</div>
+</article>
+<!-- Quick Pick 3: Sleeping Kitten (Difficulty: 1/3) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-surface-container-lowest" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Sleeping curled kitten minimal watercolor line -->
+<ellipse cx="50" cy="56" fill="#FCEADE" rx="26" ry="18" stroke="#D1CCC2" stroke-width="0.75"></ellipse>
+<circle cx="36" cy="48" fill="#F8D7C4" r="14" stroke="#D1CCC2" stroke-width="0.75"></circle>
+<polygon fill="#E89B84" points="28,38 34,28 38,38"></polygon>
+<path d="M30,52 Q35,55 40,52" fill="none" stroke="#6B625A" stroke-width="0.75"></path>
+<path d="M72,52 Q76,65 65,72" fill="none" stroke="#E89B84" stroke-linecap="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Sleeping Kitten</p>
+<div aria-label="Difficulty level 1 of 3" class="flex items-center space-x-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="text-[10px] text-secondary ml-1 font-normal">Easy</span>
+</div>
+</article>
+</div>
+</section>
+<!-- 7. Theme Row: "Flowers" -->
+<section class="space-y-3">
+<div class="px-5 flex items-center justify-between">
+<h2 class="font-headline text-xl text-on-surface font-medium">Flowers</h2>
+<button class="text-xs font-medium text-primary hover:text-primary-dim tracking-tight">See all</button>
+</div>
+<div class="flex overflow-x-auto no-scrollbar px-5 space-x-3.5 pb-2 snap-x scroll-pl-5">
+<!-- Flower 1: Spring Bouquet (Free, difficulty 2/3) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#FAF7F2]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Bouquet in glass jar -->
+<rect fill="#E0EFF1" height="35" opacity="0.6" rx="5" stroke="#90A4AE" stroke-width="0.75" width="28" x="36" y="55"></rect>
+<circle cx="40" cy="42" fill="#F28482" opacity="0.75" r="12"></circle>
+<circle cx="58" cy="38" fill="#F6BD60" opacity="0.75" r="10"></circle>
+<circle cx="48" cy="50" fill="#84A59D" opacity="0.75" r="9"></circle>
+<path d="M46,60 L46,85 M52,60 L54,85" stroke="#4E8B5F" stroke-width="1.2"></path>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Spring Bouquet</p>
+<div aria-label="Difficulty level 2 of 3" class="flex items-center space-x-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="text-[10px] text-secondary ml-1 font-normal">Medium</span>
+</div>
+</article>
+<!-- Flower 2: Wildflower Meadow (Free, difficulty 2/3) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#F6F9F5]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Meadow stems and colorful heads -->
+<path d="M0,85 Q50,70 100,85 L100,100 L0,100 Z" fill="#CCD5AE" opacity="0.6"></path>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="25" x2="25" y1="90" y2="45"></line>
+<circle cx="25" cy="43" fill="#E76F51" r="5"></circle>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="50" x2="48" y1="90" y2="35"></line>
+<circle cx="48" cy="33" fill="#F4A261" r="7"></circle>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="75" x2="78" y1="90" y2="42"></line>
+<circle cx="78" cy="40" fill="#90BE6D" r="6"></circle>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Wildflower Meadow</p>
+<div aria-label="Difficulty level 2 of 3" class="flex items-center space-x-1 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant/60"></span>
+<span class="text-[10px] text-secondary ml-1 font-normal">Medium</span>
+</div>
+</article>
+<!-- Flower 3: Vintage Roses (Premium Locked) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#FAF5F2]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Intricate vintage rose -->
+<circle cx="50" cy="50" fill="#F4ACB7" opacity="0.5" r="30"></circle>
+<path d="M40,40 Q50,30 60,40 Q55,50 45,50 Z" fill="#D8829D" opacity="0.6"></path>
+<path d="M35,55 Q50,70 65,55" fill="none" stroke="#B4532F" stroke-width="1"></path>
+<path d="M30,35 Q15,40 25,55" fill="#4E8B5F" opacity="0.5"></path>
+</svg>
+<!-- Neat Frosted Lock Badge in Top Right -->
+<div class="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-surface/90 backdrop-blur-md shadow-sm border border-outline-variant/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[13px] material-symbols-fill text-primary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1.5">
+<p class="font-body text-xs font-medium text-on-surface truncate">Vintage Roses</p>
+</div>
+<div class="flex items-center space-x-1 mt-1">
+<span class="text-[10px] font-medium text-primary">Premium</span>
+</div>
+</article>
+<!-- Flower 4: Lavender Horizon (Premium Locked) -->
+<article class="flex-shrink-0 w-32 snap-start group cursor-pointer">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden group-hover:shadow-subtle-elevated transition-shadow duration-200">
+<svg class="w-full h-full rounded-xl bg-[#F8F5FB]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Lavender row waves -->
+<path d="M0,45 Q40,40 100,50 L100,100 L0,100 Z" fill="#D8B4E2" opacity="0.4"></path>
+<path d="M0,60 Q50,55 100,68 L100,100 L0,100 Z" fill="#B5838D" opacity="0.45"></path>
+<path d="M0,75 Q30,70 100,85 L100,100 L0,100 Z" fill="#9D4EDD" opacity="0.3"></path>
+</svg>
+<div class="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-surface/90 backdrop-blur-md shadow-sm border border-outline-variant/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[13px] material-symbols-fill text-primary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Lavender Horizon</p>
+<div class="flex items-center space-x-1 mt-1">
+<span class="text-[10px] font-medium text-primary">Premium</span>
+</div>
+</article>
+</div>
+</section>
+<!-- 8. Theme Row: "Cats and Dogs" (Partially cut off to invite scrolling) -->
+<section class="space-y-3 pb-8">
+<div class="px-5 flex items-center justify-between">
+<h2 class="font-headline text-xl text-on-surface font-medium">Cats and Dogs</h2>
+<button class="text-xs font-medium text-primary hover:text-primary-dim tracking-tight">See all</button>
+</div>
+<div class="flex overflow-x-auto no-scrollbar px-5 space-x-3.5 pb-2 snap-x scroll-pl-5 opacity-95">
+<!-- Pet 1: Golden Retriever Puppy -->
+<article class="flex-shrink-0 w-32 snap-start">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 shadow-soft-card border border-outline-variant/40 relative overflow-hidden">
+<svg class="w-full h-full rounded-xl bg-[#FFFBF0]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Puppy head watercolor silhouette -->
+<circle cx="50" cy="50" fill="#E9C46A" opacity="0.6" r="22"></circle>
+<ellipse cx="32" cy="48" fill="#D4A373" opacity="0.8" rx="7" ry="14"></ellipse>
+<ellipse cx="68" cy="48" fill="#D4A373" opacity="0.8" rx="7" ry="14"></ellipse>
+<circle cx="44" cy="46" fill="#2B2622" r="2"></circle>
+<circle cx="56" cy="46" fill="#2B2622" r="2"></circle>
+<ellipse cx="50" cy="54" fill="#2B2622" rx="3.5" ry="2.5"></ellipse>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Golden Pup</p>
+</article>
+<!-- Pet 2: Window Cat -->
+<article class="flex-shrink-0 w-32 snap-start">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 border border-outline-variant/40 shadow-soft-card relative overflow-hidden">
+<svg class="w-full h-full rounded-xl bg-[#F0F4F8]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<rect fill="none" height="55" stroke="#B0BEC5" stroke-width="1" width="50" x="25" y="20"></rect>
+<ellipse cx="52" cy="65" fill="#B4532F" opacity="0.7" rx="14" ry="9"></ellipse>
+<circle cx="44" cy="58" fill="#B4532F" opacity="0.8" r="7"></circle>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Window Watcher</p>
+</article>
+<!-- Pet 3: Calico Nap -->
+<article class="flex-shrink-0 w-32 snap-start">
+<div class="w-32 h-32 bg-surface rounded-2xl p-2 border border-outline-variant/40 shadow-soft-card relative overflow-hidden">
+<svg class="w-full h-full rounded-xl bg-[#FFF6EE]" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="50" cy="52" fill="#E29578" opacity="0.5" rx="20" ry="15"></ellipse>
+<circle cx="60" cy="48" fill="#4A4E69" opacity="0.3" r="9"></circle>
+</svg>
+</div>
+<p class="font-body text-xs font-medium text-on-surface mt-1.5 truncate">Calico Nap</p>
+</article>
+</div>
+</section>
+</main>
+<!-- 9. Bottom Navigation Bar (Shared Components: BottomNavBar) -->
+<!-- Docked full-width bottom-0, fixed inside mobile canvas frame -->
+<nav aria-label="Main Navigation" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-50 bg-surface/95 backdrop-blur-md shadow-sm border-t border-outline-variant/30">
+<div class="flex justify-around items-center px-4 pt-2.5 pb-2">
+<!-- Tab 1: Library (ACTIVE - Exact semantic intent for Library home) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1 px-3 active:scale-95 transition-transform duration-150 group" href="#library">
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl material-symbols-fill" data-icon="palette" style="font-variation-settings: 'FILL' 1;">palette</span>
+</div>
+<span class="font-body text-xs font-semibold tracking-tight mt-1 text-primary">Library</span>
+</a>
+<!-- Tab 2: Challenges (INACTIVE with badge notification dot) -->
+<a class="flex flex-col items-center justify-center text-secondary font-normal py-1 px-3 active:scale-95 hover:text-primary transition-all duration-150 group" href="#challenges">
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="emoji_events">emoji_events</span>
+<!-- Red/Coral notification flame dot -->
+<span class="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface"></span>
+</div>
+<span class="font-body text-xs font-medium tracking-tight mt-1 text-secondary group-hover:text-primary transition-colors">Challenges</span>
+</a>
+<!-- Tab 3: My Works (INACTIVE) -->
+<a class="flex flex-col items-center justify-center text-secondary font-normal py-1 px-3 active:scale-95 hover:text-primary transition-all duration-150 group" href="#myworks">
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="photo_library">photo_library</span>
+</div>
+<span class="font-body text-xs font-medium tracking-tight mt-1 text-secondary group-hover:text-primary transition-colors">My Works</span>
+</a>
+</div>
+<!-- Native iOS Home Indicator Bar -->
+<div class="w-full flex justify-center pb-1.5 pt-0.5">
+<div class="w-32 h-1 bg-on-surface/30 rounded-full"></div>
+</div>
+</nav>
+</div>
+</body></html>

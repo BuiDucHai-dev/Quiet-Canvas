@@ -1,61 +1,51 @@
-//
-//  ContentView.swift
-//  Coloring-PaintTheNumber
-//
-//  Created by Hải on 5/10/26.
-//
-
 import SwiftUI
-import SwiftData
+
+/// App-wide presentation state: the painting cover, locked-picture preview and paywall.
+@Observable
+final class Router {
+    var tab = 0
+    var selectedTheme: String?
+    var painting: Catalog.Entry?
+    var preview: Catalog.Entry?
+    var paywall = false
+    /// Painting to open once the preview sheet has finished dismissing.
+    var afterPreview: Catalog.Entry?
+
+    func open(_ e: Catalog.Entry) {
+        if Store.shared.isUnlocked(e) { painting = e } else { preview = e }
+    }
+
+    func explore(theme: String? = nil) {
+        selectedTheme = theme
+        tab = 1
+    }
+}
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @AppStorage("onboarded") private var onboarded = false
+    @State private var router = Router()
+    private var store: Store { .shared }
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        if !onboarded {
+            OnboardingView { onboarded = true }
+        } else {
+            TabView(selection: $router.tab) {
+                Tab("Home", systemImage: "house", value: 0) { LibraryView() }
+                Tab("Explore", systemImage: "magnifyingglass", value: 1) { ExploreView() }
+                Tab("Challenges", systemImage: "flame", value: 2) { ChallengesView() }
+                    .badge(store.streak.state(.now) == .done ? 0 : 1)
+                Tab("My Works", systemImage: "photo.on.rectangle.angled", value: 3) { MyWorksView() }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            .tint(.accent)
+            .environment(router)
+            .fullScreenCover(item: $router.painting) { PaintView(entry: $0) }
+            .sheet(item: $router.preview, onDismiss: {
+                if let next = router.afterPreview { router.afterPreview = nil; router.painting = next }
+            }) { PreviewSheet(entry: $0).environment(router) }
+            .fullScreenCover(isPresented: $router.paywall) { PaywallView() }
         }
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
+#Preview { ContentView() }

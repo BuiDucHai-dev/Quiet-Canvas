@@ -1,0 +1,126 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--paper:#FAF6F0;--well:#F1ECE4;--surface:#FFFFFF;--ink:#2B2622;--ink2:#6B625A;--ink3:#9A918A;
+--accent:#B4532F;--accent-soft:#F6E3DA;--success:#4E8B5F;--line:#E8E1D7;--flame:#E07B39;--shadow:0 2px 8px rgba(43,38,34,.07)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:402px;height:874px;overflow:hidden}
+body{background:var(--paper);font-family:-apple-system,system-ui,sans-serif;color:var(--ink);font-size:17px;position:relative}
+.serif{font-family:ui-serif,'New York',Georgia,serif}
+.round{font-family:ui-rounded,-apple-system,sans-serif}
+.status{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;font-weight:600;font-size:17px;position:relative;z-index:5}
+.island{position:absolute;left:50%;top:11px;transform:translateX(-50%);width:124px;height:36px;background:#000;border-radius:20px}
+.sys{display:flex;gap:6px;align-items:center}
+.sys i{display:block;width:4px;background:var(--ink);border-radius:1px}
+.batt{width:26px;height:12px;border:1.5px solid var(--ink);border-radius:4px;padding:1.5px}.batt b{display:block;height:100%;width:80%;background:var(--ink);border-radius:1.5px}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:140px;height:5px;border-radius:3px;background:var(--ink);z-index:20}
+.scroll{position:absolute;top:54px;left:0;right:0;bottom:0;overflow:hidden}
+.pad{padding:0 20px}
+h1{font-family:ui-serif,'New York',Georgia,serif;font-weight:600;font-size:34px;letter-spacing:-.4px;line-height:1.12}
+h2{font-family:ui-serif,'New York',Georgia,serif;font-weight:600;font-size:22px;letter-spacing:-.2px}
+.eyebrow{font-size:13px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink2);font-weight:500}
+.sub{font-size:15px;color:var(--ink2);line-height:1.4}
+.cap{font-size:13px;color:var(--ink2)}
+.link{font-size:15px;color:var(--accent);font-weight:500}
+.sec{margin-top:30px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 20px;margin-bottom:12px}
+.row{display:flex;gap:14px;padding:0 20px;overflow:hidden}
+.card{background:var(--surface);border-radius:20px;box-shadow:var(--shadow)}
+.thumb{position:relative;border-radius:16px;overflow:hidden;background:#fff;box-shadow:var(--shadow);border:4px solid #fff}
+.thumb .art{display:block;width:100%;height:100%;border-radius:12px}
+.thumb .art .nums{display:none}
+.tcap{font-size:15px;font-weight:500;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);margin-top:3px}
+.dots{display:flex;gap:3px}.dots b{width:6px;height:6px;border-radius:3px;background:var(--line)}.dots b.on{background:var(--accent)}
+.badge{position:absolute;z-index:2}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.5px;padding:3px 8px;border-radius:10px;background:var(--accent);color:#fff}
+.lockb{top:8px;right:8px;width:28px;height:28px;border-radius:14px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.doneb{top:8px;right:8px;width:28px;height:28px;border-radius:14px;background:var(--success);display:flex;align-items:center;justify-content:center}
+.ring{top:8px;right:8px;width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.ring span{position:absolute;font-size:10px;font-weight:700}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:54px;border-radius:27px;font-size:17px;font-weight:600}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.secondary{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);border:1px solid var(--line)}
+.ibtn{width:44px;height:44px;border-radius:22px;background:var(--surface);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;flex:none}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:88px;background:rgba(250,246,240,.97);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:8px;z-index:10}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--ink3);width:100px;position:relative}
+.tab.on{color:var(--accent)}
+.tab .dot{position:absolute;top:-1px;left:58px;width:9px;height:9px;border-radius:5px;background:#D9452B;border:2px solid var(--paper)}
+.seg{display:flex;background:var(--well);border-radius:12px;padding:3px;gap:3px}
+.seg div{flex:1;text-align:center;font-size:15px;font-weight:500;padding:8px 0;border-radius:9px;color:var(--ink2)}
+.seg .on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+.chips{display:flex;gap:8px}
+.chip{padding:8px 16px;border-radius:18px;font-size:15px;font-weight:500;background:var(--surface);border:1px solid var(--line);color:var(--ink2)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;padding:0 20px}
+.grid .thumb{aspect-ratio:1}
+.scrim{position:absolute;inset:0;background:rgba(43,38,34,.42);z-index:30}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-radius:28px 28px 0 0;z-index:31;padding:10px 20px 40px}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+.list{background:var(--surface);border-radius:14px;overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:50px;border-bottom:1px solid var(--line);font-size:17px}
+.li:last-child{border-bottom:none}
+.li .ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.li .val{margin-left:auto;color:var(--ink2);font-size:17px;display:flex;align-items:center;gap:6px}
+.toggle{margin-left:auto;width:51px;height:31px;border-radius:16px;background:var(--success);position:relative}
+.toggle:after{content:"";position:absolute;right:2px;top:2px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.toggle.off{background:#E3DDD3}.toggle.off:after{right:auto;left:2px}
+.grp-h{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink2);margin:24px 16px 8px}
+.paper-sheet text{font-family:ui-rounded,-apple-system,sans-serif;font-weight:600;fill:rgba(43,38,34,.72);text-anchor:middle;dominant-baseline:central}
+</style></head><body><div class="status"><span>9:41</span><div class="island"></div><div class="sys"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i><div class="batt"><b></b></div></div></div>
+<div class="pad" style="display:flex;align-items:center;gap:12px;padding-top:6px">
+  <div class="ibtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2B2622" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#2B2622;flex:none"><path d="M15 4l-8 8 8 8"/></svg></div><div style="flex:1"></div>
+</div>
+<div class="pad" style="margin-top:10px"><h1>Flowers</h1><p class="sub" style="margin-top:4px">12 pictures · 2 free</p></div>
+<div class="pad" style="margin-top:16px"><div class="chips"><div class="chip on">All</div><div class="chip">Easy</div><div class="chip">Medium</div><div class="chip">Hard</div></div></div>
+<div class="grid" style="margin-top:18px"><div style="flex:none"><div class="thumb" style=""><svg class="art" viewBox="0 0 100 100" style="background:#FAF7F2">
+<!-- Bouquet in glass jar -->
+<rect fill="#E0EFF1" height="35" opacity="0.6" rx="5" stroke="#90A4AE" stroke-width="0.75" width="28" x="36" y="55"></rect>
+<circle cx="40" cy="42" fill="#F28482" opacity="0.75" r="12"></circle>
+<circle cx="58" cy="38" fill="#F6BD60" opacity="0.75" r="10"></circle>
+<circle cx="48" cy="50" fill="#84A59D" opacity="0.75" r="9"></circle>
+<path d="M46,60 L46,85 M52,60 L54,85" stroke="#4E8B5F" stroke-width="1.2"></path>
+</svg></div><div class="tcap">Spring Bouquet</div><div class="meta"><div class="dots"><b class="on"></b><b class=""></b><b class=""></b></div>Easy</div></div><div style="flex:none"><div class="thumb" style=""><div class="badge doneb"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="color:#fff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><svg class="art" viewBox="0 0 100 100" style="background:#FFFFFF">
+<!-- Large, calm Peony bloom -->
+<circle cx="50" cy="48" fill="#F8EDEB" r="28" stroke="#E8D5D1" stroke-width="0.8"></circle>
+<path d="M40,42 Q50,30 60,42 Q50,48 40,42 Z" fill="#FCD5CE" opacity="0.7"></path>
+<path d="M35,50 Q50,62 65,50 Q52,58 35,50 Z" fill="#FFB5A7" opacity="0.6"></path>
+<path d="M48,76 Q50,86 52,98" stroke="#4E8B5F" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M50,82 Q65,75 60,68" fill="#CCD5AE" opacity="0.7" stroke="#4E8B5F" stroke-width="1.8"></path>
+</svg></div><div class="tcap">Single Peony</div><div class="meta"><div class="dots"><b class="on"></b><b class=""></b><b class=""></b></div>Easy</div></div><div style="flex:none"><div class="thumb" style=""><div class="badge ring"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#E8E1D7" stroke-width="3"/><circle cx="16" cy="16" r="14" fill="none" stroke="#B4532F" stroke-width="3" stroke-linecap="round" stroke-dasharray="26.4 88.0" transform="rotate(-90 16 16)"/></svg><span>30%</span></div><svg class="art" viewBox="0 0 100 100" style="background:#F6F9F5">
+<!-- Meadow stems and colorful heads -->
+<path d="M0,85 Q50,70 100,85 L100,100 L0,100 Z" fill="#CCD5AE" opacity="0.6"></path>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="25" x2="25" y1="90" y2="45"></line>
+<circle cx="25" cy="43" fill="#E76F51" r="5"></circle>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="50" x2="48" y1="90" y2="35"></line>
+<circle cx="48" cy="33" fill="#F4A261" r="7"></circle>
+<line stroke="#4E8B5F" stroke-width="1.2" x1="75" x2="78" y1="90" y2="42"></line>
+<circle cx="78" cy="40" fill="#90BE6D" r="6"></circle>
+</svg></div><div class="tcap">Wildflower Meadow</div><div class="meta"><div class="dots"><b class="on"></b><b class="on"></b><b class=""></b></div>Medium</div></div><div style="flex:none"><div class="thumb" style=""><div class="badge lockb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B625A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#6B625A;flex:none"><rect x="5" y="10.5" width="14" height="10.5" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div><svg class="art" viewBox="0 0 100 100" style="background:#FAF5F2">
+<!-- Intricate vintage rose -->
+<circle cx="50" cy="50" fill="#F4ACB7" opacity="0.5" r="30"></circle>
+<path d="M40,40 Q50,30 60,40 Q55,50 45,50 Z" fill="#D8829D" opacity="0.6"></path>
+<path d="M35,55 Q50,70 65,55" fill="none" stroke="#B4532F" stroke-width="1"></path>
+<path d="M30,35 Q15,40 25,55" fill="#4E8B5F" opacity="0.5"></path>
+</svg></div><div class="tcap">Vintage Roses</div><div class="meta"><div class="dots"><b class="on"></b><b class="on"></b><b class=""></b></div>Medium</div></div><div style="flex:none"><div class="thumb" style=""><div class="badge lockb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B625A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#6B625A;flex:none"><rect x="5" y="10.5" width="14" height="10.5" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div><svg class="art" viewBox="0 0 100 100" style="background:#F8F5FB">
+<!-- Lavender row waves -->
+<path d="M0,45 Q40,40 100,50 L100,100 L0,100 Z" fill="#D8B4E2" opacity="0.4"></path>
+<path d="M0,60 Q50,55 100,68 L100,100 L0,100 Z" fill="#B5838D" opacity="0.45"></path>
+<path d="M0,75 Q30,70 100,85 L100,100 L0,100 Z" fill="#9D4EDD" opacity="0.3"></path>
+</svg></div><div class="tcap">Lavender Horizon</div><div class="meta"><div class="dots"><b class="on"></b><b class="on"></b><b class="on"></b></div>Hard</div></div><div style="flex:none"><div class="thumb" style=""><div class="badge lockb"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B625A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#6B625A;flex:none"><rect x="5" y="10.5" width="14" height="10.5" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></div><svg class="art" viewBox="0 0 100 100" style="background:#FFFFFF">
+<!-- Sky backdrop -->
+<rect fill="#A0C4E2" height="40" opacity="0.35" width="100"></rect>
+<!-- Colored golden petals and center -->
+<circle cx="50" cy="50" fill="#5F3B20" opacity="0.8" r="18"></circle>
+<path d="M50,22 L55,34 L50,30 L45,34 Z" fill="#E9C46A"></path>
+<path d="M68,32 L60,40 L64,36 Z" fill="#F4A261"></path>
+<path d="M78,50 L66,54 L68,48 Z" fill="#E9C46A"></path>
+<path d="M68,68 L58,60 L62,64 Z" fill="#F4A261"></path>
+<path d="M50,78 L45,66 L55,66 Z" fill="#E76F51"></path>
+<path d="M32,68 L40,60 L36,64 Z" fill="#E9C46A"></path>
+<path d="M22,50 L34,46 L34,54 Z" fill="#F4A261"></path>
+<!-- Green leaves -->
+<path d="M10,80 Q30,70 45,95 Q25,98 10,80 Z" fill="#4E8B5F" opacity="0.7"></path>
+<path d="M90,80 Q70,72 55,95 Q75,98 90,80 Z" fill="#3D704C" opacity="0.7"></path>
+<!-- Unfinished 20% area on top left -->
+<path d="M32,32 L40,40 L36,36 Z" fill="#FFFFFF" stroke="#C8C2B6" stroke-width="0.75"></path>
+<text fill="#8C847B" font-family="Inter" font-size="5" font-weight="600" text-anchor="middle" x="35" y="34">9</text>
+</svg></div><div class="tcap">Sunflower Field</div><div class="meta"><div class="dots"><b class="on"></b><b class="on"></b><b class=""></b></div>Medium</div></div></div><div class="tabbar"><div class="tab on"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B4532F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#B4532F;flex:none"><path d="M4 4h4v16H4zM10 4h4v16h-4zM15.6 5.2l3.7-.9 3.2 15.4-3.7.9z"/></svg>Library</div><div class="tab"><div class="dot"></div><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9A918A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color:#9A918A;flex:none"><path d="M12 2.5c1.2 3.2 5.5 5.3 5.5 10.5a5.5 5.5 0 0 1-11 0c0-2.3 1.1-3.9 2.2-5 .3 1.6 1.1 2.7 2.2 3.2-.2-3.2-.6-5.6 1.1-8.7z"/></svg>Challenges</div><div class="tab"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9A918A" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color:#9A918A;flex:none"><rect x="3" y="6.5" width="14" height="14" rx="2.5"/><path d="M7 3.5h11.5a2.5 2.5 0 0 1 2.5 2.5v11.5"/><path d="M3.5 17l4-4 4 4 2-2 3.5 3.5"/></svg>My Works</div></div><div class="home"></div></body></html>
