@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 14% 99%;
+    --foreground: 240 10% 10%;
+    --card: 240 14% 99%;
+    --card-foreground: 240 10% 10%;
+    --popover: 240 16% 99%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 240 8% 12%;
+    --primary-foreground: 240 14% 98%;
+    --secondary: 240 9% 95%;
+    --secondary-foreground: 240 8% 14%;
+    --muted: 240 9% 95%;
+    --muted-foreground: 240 5% 32%;
+    --accent: 240 9% 94%;
+    --accent-foreground: 240 8% 14%;
+    --destructive: 0 78% 56%;
+    --destructive-foreground: 240 14% 98%;
+    --border: 240 9% 90%;
+    --input: 240 9% 90%;
+    --ring: 240 6% 62%;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 240 12% 5%;
+    --foreground: 240 12% 96%;
+    --card: 240 12% 5%;
+    --card-foreground: 240 12% 96%;
+    --popover: 240 12% 6%;
+    --popover-foreground: 240 12% 96%;
+    --primary: 240 12% 96%;
+    --primary-foreground: 240 10% 10%;
+    --secondary: 240 8% 16%;
+    --secondary-foreground: 240 12% 96%;
+    --muted: 240 8% 14%;
+    --muted-foreground: 240 6% 75%;
+    --accent: 240 8% 16%;
+    --accent-foreground: 240 12% 96%;
+    --destructive: 0 70% 38%;
+    --destructive-foreground: 240 12% 96%;
+    --border: 240 8% 16%;
+    --input: 240 8% 16%;
+    --ring: 240 8% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hints only where the text can be edited. Export and thumbnail canvases
+     render contenteditable="false", and html-to-image copies pseudo-elements,
+     so a bare [contenteditable] selector baked "LABEL" and "Headline goes
+     here" into exported PNGs of cleared copy (issue 41). */
+  [contenteditable]:not([contenteditable="false"]):empty::before {
+    content: attr(data-placeholder);
+    opacity: 0.4;
+  }
+}
+
+/* react-rnd editable element hint: subtle outline + visible resize handles on hover */
+.rnd-editable {
+  cursor: move;
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color 120ms ease;
+}
+.rnd-editable:hover {
+  outline-color: rgba(91, 124, 250, 0.55);
+}
+.rnd-editable:focus-within,
+.rnd-editable.rnd-selected {
+  outline-color: rgba(91, 124, 250, 0.9);
+  outline-style: solid;
+}
+
+.rnd-rotate-handle {
+  position: absolute;
+  right: -14px;
+  top: -14px;
+  z-index: 20;
+  display: flex;
+  height: 28px;
+  width: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(91, 124, 250, 0.65);
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(30, 41, 59, 0.92);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.2);
+  cursor: grab;
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.rnd-editable:hover .rnd-rotate-handle,
+.rnd-editable.rnd-selected .rnd-rotate-handle,
+.rnd-rotate-handle:focus-visible {
+  opacity: 1;
+}
+
+.rnd-rotate-handle:hover,
+.rnd-rotate-handle:focus-visible {
+  transform: scale(1.05);
+}
+
+.rnd-rotate-handle:active {
+  cursor: grabbing;
+}
+
+/* Show a visible cursor outline on contenteditable text inside Rnd while focused. */
+.rnd-editable [contenteditable]:focus {
+  box-shadow: 0 0 0 2px rgba(91, 124, 250, 0.45);
+  border-radius: 2px;
+}
+
+/* Quiet Japandi (style 17) tokens & classes */
+:root {
+  --washi: #F3F0EA;
+  --washi-lit: #FCFAF6;
+  --washi-shade: #E2DBCF;
+  --sumi: #1E1D1B;
+  --stone-ink: #4E4B46;
+  --stone: #8C8A85;
+  --hinoki: #C9A97E;
+  --hinoki-lit: #E9D6B4;
+  --hinoki-ink: #7A5A34;
+  --shu: #C8321E;
+  --glaze: #A69E8F;
+  --ame: #A8804F;
+  --clay: #C39A72;
+  --plinth: #E2DCD1;
+}
+
+.japandi-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(110% 70% at 14% 6%, rgba(252, 250, 246, 0.95) 0%, rgba(248, 246, 241, 0.5) 30%, rgba(243, 240, 234, 0) 62%),
+    linear-gradient(180deg, rgba(236, 231, 222, 0) 55%, rgba(226, 219, 207, 0.55) 100%);
+}
+
+.japandi-wash-dark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(100% 60% at 14% 6%, #2B2926 0%, #1E1D1B 55%, #171614 100%);
+}
+
+.japandi-fibre {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url(/washi.svg) 0 0 / 100% 100% no-repeat;
+}
+
+.japandi-shelf {
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  height: 32px;
+  pointer-events: none;
+  background: linear-gradient(180deg, #E9D6B4 0, #E2CBA3 7px, #B8956A 8px, #CBAB80 12px, #C5A376 70%, #A7845A 100%);
+  box-shadow: 0 1px 0 rgba(90, 64, 36, 0.35), 0 14px 22px -6px rgba(84, 62, 36, 0.26), 0 50px 80px -24px rgba(84, 62, 36, 0.16);
+}
+
+.japandi-shelf-dark {
+  background: linear-gradient(180deg, #D9C3A0 0, #CEB58E 7px, #9E7D54 8px, #B49368 12px, #AA895E 70%, #8C6B42 100%);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.55), 0 18px 28px -6px rgba(0, 0, 0, 0.45), 0 50px 80px -24px rgba(0, 0, 0, 0.35);
+}
+
+.japandi-pshadow {
+  filter: drop-shadow(26px 22px 46px rgba(88, 68, 44, 0.16)) drop-shadow(0 8px 14px rgba(60, 46, 30, 0.16));
+}
+
+.japandi-pshadow-dark {
+  filter: drop-shadow(26px 22px 46px rgba(0, 0, 0, 0.45)) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.38));
+}
+
+.japandi-contact {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(52, 40, 28, 0.42), rgba(52, 40, 28, 0));
+}
+
+.japandi-kenten-char {
+  position: relative;
+  display: inline-block;
+}
+
+.japandi-kenten-char::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1.24em;
+  width: 0.12em;
+  height: 0.12em;
+  min-width: 14px;
+  min-height: 14px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--kenten-color, #7A5A34);
+  pointer-events: none;
+}

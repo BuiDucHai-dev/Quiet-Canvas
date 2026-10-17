@@ -18,6 +18,8 @@ import datetime, json, os, re, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEST = os.path.join(ROOT, "Coloring-PaintTheNumber", "Templates")
+THEMES_DEST = os.path.join(DEST, "Themes")
+CHALLENGES_DEST = os.path.join(DEST, "Challenges")
 SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/Documents/Mine/ColorNumber-GenerateImage-Tool/output")
 CHALLENGE_SRC = os.path.join(os.path.dirname(SRC), "output_hard", "masterpiece_worlds")
 PIPELINE_DATA = os.path.join(os.path.dirname(SRC), "configs", "pipeline_data.json")
@@ -41,7 +43,8 @@ def challenge_titles():
     return out
 
 
-def import_folder(path, theme_id, old_entries, today, problems, titles=None):
+def import_folder(path, dest_dir, theme_id, old_entries, today, problems, titles=None):
+    os.makedirs(dest_dir, exist_ok=True)
     files = sorted((f for f in os.listdir(path) if NAME.match(f)), key=lambda f: int(NAME.match(f).group(1)))
     entries = []
     for f in files:
@@ -54,11 +57,11 @@ def import_folder(path, theme_id, old_entries, today, problems, titles=None):
             problems.append(f"{pid}: missing regions/labels/bbox")
             continue
         json.dump({k: data[k] for k in ("width", "height", "palette", "regions")},
-                  open(os.path.join(DEST, pid + ".json"), "w"), separators=(",", ":"))
+                  open(os.path.join(dest_dir, pid + ".json"), "w"), separators=(",", ":"))
         png = os.path.join(path, pid + ".png")
         # 600px thumbnail for lists, 1024px artwork revealed when a picture is finished
         for suffix, side, quality in ((".jpg", "600", "72"), ("_art.jpg", "1024", "80")):
-            jpg = os.path.join(DEST, pid + suffix)
+            jpg = os.path.join(dest_dir, pid + suffix)
             if os.path.exists(png) and (not os.path.exists(jpg) or os.path.getmtime(png) > os.path.getmtime(jpg)):
                 subprocess.run(["sips", "-Z", side, "-s", "format", "jpeg", "-s", "formatOptions", quality, png, "--out", jpg],
                                check=True, stdout=subprocess.DEVNULL)
@@ -78,6 +81,10 @@ def import_folder(path, theme_id, old_entries, today, problems, titles=None):
     return entries
 
 
+def dir_size(root):
+    return sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fn in os.walk(root) for f in fn)
+
+
 def main():
     catalog_path = os.path.join(DEST, "catalog.json")
     old = json.load(open(catalog_path)) if os.path.exists(catalog_path) else {"themes": [], "templates": [], "challenges": []}
@@ -91,7 +98,7 @@ def main():
         if not os.path.isdir(path):
             continue
         theme_id = re.sub(r"^\d+_", "", folder)
-        theme_entries = import_folder(path, theme_id, old_entries, today, problems)
+        theme_entries = import_folder(path, THEMES_DEST, theme_id, old_entries, today, problems)
         if not theme_entries:
             continue
         # default: first easy and first normal picture of each theme are free
@@ -110,18 +117,16 @@ def main():
 
     challenges = []
     if os.path.isdir(CHALLENGE_SRC):
-        challenges = import_folder(CHALLENGE_SRC, "masterpiece_worlds", old_entries, today, problems, challenge_titles())
+        challenges = import_folder(CHALLENGE_SRC, CHALLENGES_DEST, "masterpiece_worlds", old_entries, today, problems, challenge_titles())
         for e in challenges:
             e["free"] = bool(e["free"])
 
     json.dump({"version": 1, "themes": themes, "templates": entries, "challenges": challenges},
               open(catalog_path, "w"), indent=1, ensure_ascii=False)
-    size = sum(os.path.getsize(os.path.join(DEST, f)) for f in os.listdir(DEST))
-    print(f"{len(themes)} themes, {len(entries)} templates, {len(challenges)} challenges, Templates/ = {size / 1e6:.1f} MB")
+    print(f"{len(themes)} themes, {len(entries)} templates, {len(challenges)} challenges, Templates/ = {dir_size(DEST) / 1e6:.1f} MB")
     for p in problems:
         print("SKIPPED", p)
 
 
 if __name__ == "__main__":
     main()
-

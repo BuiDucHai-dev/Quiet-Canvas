@@ -1639,6 +1639,116 @@
    "colors": 24,
    "added": "2026-10-15",
    "thumb": "005_hard_masterpiece_worlds_5.jpg"
+  },
+  {
+   "id": "006_hard_masterpiece_worlds_6",
+   "title": "Alpine Viaduct Steam Express",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 250,
+   "colors": 27,
+   "added": "2026-10-17",
+   "thumb": "006_hard_masterpiece_worlds_6.jpg"
+  },
+  {
+   "id": "007_hard_masterpiece_worlds_7",
+   "title": "Victorian Butterfly Conservatory",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 441,
+   "colors": 21,
+   "added": "2026-10-17",
+   "thumb": "007_hard_masterpiece_worlds_7.jpg"
+  },
+  {
+   "id": "008_hard_masterpiece_worlds_8",
+   "title": "Master Luthier Violin Workshop",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 365,
+   "colors": 25,
+   "added": "2026-10-17",
+   "thumb": "008_hard_masterpiece_worlds_8.jpg"
+  },
+  {
+   "id": "009_hard_masterpiece_worlds_9",
+   "title": "Cappadocia Hot Air Balloon Fiesta",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 280,
+   "colors": 23,
+   "added": "2026-10-17",
+   "thumb": "009_hard_masterpiece_worlds_9.jpg"
+  },
+  {
+   "id": "010_hard_masterpiece_worlds_10",
+   "title": "Autumn Japanese Tea House & Koi Pond",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 431,
+   "colors": 25,
+   "added": "2026-10-17",
+   "thumb": "010_hard_masterpiece_worlds_10.jpg"
+  },
+  {
+   "id": "011_hard_masterpiece_worlds_11",
+   "title": "Captain's Nautical Chart Room",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 257,
+   "colors": 23,
+   "added": "2026-10-17",
+   "thumb": "011_hard_masterpiece_worlds_11.jpg"
+  },
+  {
+   "id": "012_hard_masterpiece_worlds_12",
+   "title": "Woodland Squirrel Treehouse Village",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 439,
+   "colors": 21,
+   "added": "2026-10-17",
+   "thumb": "012_hard_masterpiece_worlds_12.jpg"
+  },
+  {
+   "id": "013_hard_masterpiece_worlds_13",
+   "title": "Sunlit Attic Art Studio",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 258,
+   "colors": 23,
+   "added": "2026-10-17",
+   "thumb": "013_hard_masterpiece_worlds_13.jpg"
+  },
+  {
+   "id": "014_hard_masterpiece_worlds_14",
+   "title": "Ancient Persian Bazaar & Oasis",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 335,
+   "colors": 22,
+   "added": "2026-10-17",
+   "thumb": "014_hard_masterpiece_worlds_14.jpg"
+  },
+  {
+   "id": "015_hard_masterpiece_worlds_15",
+   "title": "Stained Glass Peacock & Lotus Window",
+   "theme": "masterpiece_worlds",
+   "difficulty": "hard",
+   "free": false,
+   "regions": 358,
+   "colors": 12,
+   "added": "2026-10-17",
+   "thumb": "015_hard_masterpiece_worlds_15.jpg"
   }
  ]
 }
