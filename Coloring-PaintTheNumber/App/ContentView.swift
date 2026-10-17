@@ -32,38 +32,46 @@ final class Router {
 }
 
 struct ContentView: View {
-//    @AppStorage("onboarded") private var onboarded = false
-    @State private var onboarded = false
+    @State private var isShowingSplash = true
+    @AppStorage("onboarded") private var onboarded = false
     @State private var router = Router()
     @Environment(\.store) private var store
 
     var body: some View {
-        if !onboarded {
-            OnboardingView { starter in
-                withAnimation(.smooth(duration: 0.32)) {
-                    onboarded = true
+        Group {
+            if isShowingSplash {
+                SplashScreenView(isShowing: $isShowingSplash)
+                    .transition(.opacity)
+            } else if !onboarded {
+                OnboardingView { starter in
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        onboarded = true
+                    }
+                    if let starter {
+                        Task { router.preview = starter }
+                    }
                 }
-                if let starter {
-                    Task { router.preview = starter }
+                .transition(.opacity)
+            } else {
+                TabView(selection: $router.tab) {
+                    Tab("Home", systemImage: "house", value: 0) { LibraryView() }
+                    Tab("Explore", systemImage: "magnifyingglass", value: 1) { ExploreView() }
+                    Tab("Challenges", systemImage: "flame", value: 2) { ChallengesView() }
+                        .badge(store.streak.state(.now) == .done ? 0 : 1)
+                    Tab("My Works", systemImage: "photo.on.rectangle.angled", value: 3) { MyWorksView() }
                 }
+                .tint(.accent)
+                .environment(router)
+                .fullScreenCover(item: $router.painting) { PaintView(entry: $0) }
+                .sheet(item: $router.preview, onDismiss: {
+                    if let next = router.afterPreview { router.afterPreview = nil; router.painting = next }
+                }) { PreviewSheet(entry: $0).environment(router) }
+                .fullScreenCover(isPresented: $router.paywall) { PaywallView() }
+                .transition(.opacity)
             }
-            .transition(.opacity)
-        } else {
-            TabView(selection: $router.tab) {
-                Tab("Home", systemImage: "house", value: 0) { LibraryView() }
-                Tab("Explore", systemImage: "magnifyingglass", value: 1) { ExploreView() }
-                Tab("Challenges", systemImage: "flame", value: 2) { ChallengesView() }
-                    .badge(store.streak.state(.now) == .done ? 0 : 1)
-                Tab("My Works", systemImage: "photo.on.rectangle.angled", value: 3) { MyWorksView() }
-            }
-            .tint(.accent)
-            .environment(router)
-            .fullScreenCover(item: $router.painting) { PaintView(entry: $0) }
-            .sheet(item: $router.preview, onDismiss: {
-                if let next = router.afterPreview { router.afterPreview = nil; router.painting = next }
-            }) { PreviewSheet(entry: $0).environment(router) }
-            .fullScreenCover(isPresented: $router.paywall) { PaywallView() }
         }
+        .animation(.easeInOut(duration: 0.35), value: isShowingSplash)
+        .animation(.easeInOut(duration: 0.35), value: onboarded)
     }
 }
 
