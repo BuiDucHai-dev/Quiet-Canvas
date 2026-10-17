@@ -32,13 +32,22 @@ final class Router {
 }
 
 struct ContentView: View {
-    @AppStorage("onboarded") private var onboarded = false
+//    @AppStorage("onboarded") private var onboarded = false
+    @State private var onboarded = false
     @State private var router = Router()
     @Environment(\.store) private var store
 
     var body: some View {
         if !onboarded {
-            OnboardingView { onboarded = true }
+            OnboardingView { starter in
+                withAnimation(.smooth(duration: 0.32)) {
+                    onboarded = true
+                }
+                if let starter {
+                    Task { router.preview = starter }
+                }
+            }
+            .transition(.opacity)
         } else {
             TabView(selection: $router.tab) {
                 Tab("Home", systemImage: "house", value: 0) { LibraryView() }

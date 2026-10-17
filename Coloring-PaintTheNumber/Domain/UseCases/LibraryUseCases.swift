@@ -12,11 +12,28 @@ enum LibraryUseCases {
         let entries: [Catalog.Entry]
     }
 
+    /// 4 unlocked easy pictures from distinct themes for the onboarding starter picker.
+    static func starterPictures(
+        catalog: Catalog,
+        isUnlocked: (Catalog.Entry) -> Bool
+    ) -> [Catalog.Entry] {
+        var seenThemes: Set<String> = []
+        var result: [Catalog.Entry] = []
+        for entry in catalog.templates where entry.difficulty == .easy && isUnlocked(entry) {
+            if seenThemes.insert(entry.theme).inserted {
+                result.append(entry)
+                if result.count == 4 { return result }
+            }
+        }
+        return result
+    }
+
     /// "Continue painting" when something is in progress, "Start here" for a brand-new user.
     static func topShelf(
         catalog: Catalog,
         meta: [String: WorkMeta],
         favorites: String,
+        starterID: String = "",
         status: (Catalog.Entry) -> WorkStatus,
         isUnlocked: (Catalog.Entry) -> Bool
     ) -> ShelfContent? {
@@ -30,7 +47,12 @@ enum LibraryUseCases {
         let pool = catalog.templates.filter { $0.difficulty == .easy && isUnlocked($0) }
         let fav = Favorites.ids(favorites)
         let liked = pool.filter { fav.contains($0.theme) }
-        return ShelfContent(title: "Start here", note: nil, entries: Array((liked + pool.filter { !liked.contains($0) }).prefix(5)))
+        let ordered = liked + pool.filter { !liked.contains($0) }
+        if let picked = pool.first(where: { $0.id == starterID }) {
+            let rest = ordered.filter { $0.id != picked.id }
+            return ShelfContent(title: "Start here", note: nil, entries: Array(([picked] + rest).prefix(5)))
+        }
+        return ShelfContent(title: "Start here", note: nil, entries: Array(ordered.prefix(5)))
     }
 
     /// 8 untouched pictures rotated deterministically each calendar day, with unlocked picks up front.

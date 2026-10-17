@@ -10,6 +10,7 @@ struct LibraryView: View {
     @Environment(Router.self) private var router
     @Environment(\.store) private var store
     @AppStorage("favorites") private var favorites = ""
+    @AppStorage("starterID") private var starterID = ""
     @State private var settings = false
     private let catalog = Catalog.shared
 
@@ -23,6 +24,7 @@ struct LibraryView: View {
                         catalog: catalog,
                         meta: store.meta,
                         favorites: favorites,
+                        starterID: starterID,
                         status: store.status,
                         isUnlocked: store.isUnlocked
                     )

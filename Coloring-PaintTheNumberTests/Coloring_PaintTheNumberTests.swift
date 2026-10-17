@@ -152,6 +152,21 @@ final class Coloring_PaintTheNumberTests: XCTestCase {
 
         let repo = InMemoryProgressRepository()
         let store = Store(repository: repo)
+        let starters = LibraryUseCases.starterPictures(catalog: .shared, isUnlocked: store.isUnlocked)
+        XCTAssertEqual(starters.count, 4)
+        XCTAssertTrue(starters.allSatisfy { $0.difficulty == .easy && store.isUnlocked($0) })
+
+        let chosenStarter = starters.last!
+        let topFirst = LibraryUseCases.topShelf(
+            catalog: .shared,
+            meta: store.meta,
+            favorites: "",
+            starterID: chosenStarter.id,
+            status: store.status,
+            isUnlocked: store.isUnlocked
+        )?.entries.first
+        XCTAssertEqual(topFirst?.id, chosenStarter.id)
+
         let todayEntry = store.challenge(on: .now)
         XCTAssertEqual(store.status(todayEntry), .new)
 
