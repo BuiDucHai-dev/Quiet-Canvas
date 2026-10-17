@@ -37,14 +37,12 @@ export type ExportSize = { label: string; w: number; h: number };
 
 export const EXPORT_SIZES: Record<Device, ExportSize[]> = {
   iphone: [
-    { label: '6.9"', w: 1320, h: 2868 },
-    { label: '6.5"', w: 1284, h: 2778 },
-    { label: '6.3"', w: 1206, h: 2622 },
-    { label: '6.1"', w: 1125, h: 2436 },
+    { label: '6.3" (1206 × 2622)', w: 1206, h: 2622 },
+    { label: '6.1" (1179 × 2556)', w: 1179, h: 2556 },
   ],
   ipad: [
-    { label: '13" iPad',       w: 2064, h: 2752 },
-    { label: '12.9" iPad Pro', w: 2048, h: 2732 },
+    { label: '13" iPad (2064 × 2752)',       w: 2064, h: 2752 },
+    { label: '12.9" iPad Pro (2048 × 2732)', w: 2048, h: 2732 },
   ],
   // App Store Connect lists exactly one size per Duo display and orientation.
   "duo-outer":           [{ label: "Outer portrait",  w: 1398, h: 2034 }],

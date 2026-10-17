@@ -18,7 +18,7 @@ async function fetchAsDataUrl(path: string): Promise<{ data: string; w: number; 
       await image.decode();
       return { data: path, w: image.naturalWidth, h: image.naturalHeight };
     }
-    const resp = await fetch(path, { signal: AbortSignal.timeout(10000) });
+    const resp = await fetch(path, { cache: "no-store", signal: AbortSignal.timeout(10000) });
     if (!resp.ok) return null;
     const blob = await resp.blob();
     const data = await new Promise<string>((resolve, reject) => {

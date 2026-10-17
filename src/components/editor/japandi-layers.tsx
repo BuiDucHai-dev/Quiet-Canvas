@@ -285,11 +285,17 @@ export function JapandiBackdrop({
   index: number;
 }) {
   const inverted = !!slide.inverted;
-  const s = cW / 1320;
+  const isWide = cW > cH;
+  const s = (isWide ? Math.min(cW, cH) : Math.min(cW, cH * 0.48)) / 1320;
+  const sx = cW / 1320;
   const meta = JAPANDI_SLIDE_META[index % JAPANDI_SLIDE_META.length];
   const isPlinth = slide.layout === "device-top";
   const isCloser = slide.layout === "no-device";
-  const shelfTop = isCloser ? Math.round(2560 * (cH / 2868)) : Math.round(2727 * (cH / 2868));
+  const shelfTop = isWide
+    ? Math.round(cH * (cW === 5244 ? 0.548 : cH === 1646 ? 0.701 : 0.701))
+    : isCloser
+      ? Math.round(2560 * (cH / 2868))
+      : Math.round(2727 * (cH / 2868));
   const plinthTop = Math.round(2155 * (cH / 2868));
 
   return (
@@ -334,13 +340,13 @@ export function JapandiBackdrop({
       </svg>
 
       {/* Structure: Stone plinth on device-top, Oak shelf on all other slides */}
-      {isPlinth ? (
+      {isPlinth && !isWide ? (
         <div
           style={{
             position: "absolute",
-            left: Math.round(170 * s),
+            left: Math.round(170 * sx),
             top: plinthTop,
-            width: Math.round(1220 * s),
+            width: Math.round(1220 * sx),
             height: Math.round(132 * s),
             boxShadow:
               "0 26px 40px -10px rgba(84, 64, 40, 0.22), 0 70px 110px -30px rgba(84, 64, 40, 0.16)",
@@ -374,19 +380,25 @@ export function JapandiBackdrop({
       <div
         style={{
           position: "absolute",
-          right: Math.round(88 * s),
-          top: isPlinth ? Math.round(2296 * (cH / 2868)) : Math.round(150 * (cH / 2868)),
+          right: isWide
+            ? Math.round(cW === 5244 ? 1960 : cH === 1646 ? 1130 : 880)
+            : Math.round(88 * sx),
+          top: isWide
+            ? Math.round(cW === 5244 ? 700 : cH === 1646 ? 520 : 810)
+            : isPlinth
+              ? Math.round(2296 * (cH / 2868))
+              : Math.round(150 * (cH / 2868)),
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: Math.round(38 * s),
+          gap: Math.round((isWide ? 22 : 38) * s),
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "row-reverse",
-            gap: Math.round(22 * s),
+            gap: Math.round((isWide ? 14 : 22) * s),
             alignItems: "flex-start",
           }}
         >
@@ -396,7 +408,7 @@ export function JapandiBackdrop({
               writingMode: "vertical-rl",
               fontFamily: "var(--font-mincho), Georgia, serif",
               fontWeight: 500,
-              fontSize: Math.round((isPlinth ? 102 : 116) * s),
+              fontSize: Math.round((isWide ? 64 : isPlinth ? 102 : 116) * s),
               lineHeight: 1,
               letterSpacing: "0.12em",
               color: inverted ? "#F3F0EA" : "#1E1D1B",
@@ -407,10 +419,10 @@ export function JapandiBackdrop({
           <div
             style={{
               width: Math.max(1.5, 1.5 * s),
-              height: Math.round(196 * s),
+              height: Math.round((isWide ? 116 : 196) * s),
               background: "#8C8A85",
               opacity: 0.6,
-              marginTop: Math.round(12 * s),
+              marginTop: Math.round(10 * s),
             }}
           />
           <div
@@ -418,11 +430,11 @@ export function JapandiBackdrop({
               writingMode: "vertical-rl",
               fontFamily: "var(--font-kaku), sans-serif",
               fontWeight: 500,
-              fontSize: Math.round(29 * s),
+              fontSize: Math.round((isWide ? 18 : 29) * s),
               lineHeight: 1,
               letterSpacing: "0.28em",
               color: inverted ? "#B8B4AC" : "#4E4B46",
-              marginTop: Math.round(10 * s),
+              marginTop: Math.round(8 * s),
               textTransform: "lowercase",
             }}
           >
@@ -431,21 +443,21 @@ export function JapandiBackdrop({
         </div>
         <JapandiHanko
           glyph={meta.seal}
-          size={Math.round((isPlinth ? 98 : 108) * s)}
+          size={Math.round((isWide ? 64 : isPlinth ? 98 : 108) * s)}
           inverted={inverted}
           uid={`seal-${index}`}
         />
       </div>
 
       {/* Closer slide (no-device): 5-row specification table + wordmark + large Yunomi */}
-      {isCloser && (
+      {isCloser && !isWide && (
         <>
           <div
             style={{
               position: "absolute",
-              left: Math.round(108 * s),
+              left: Math.round(108 * sx),
               top: Math.round(740 * (cH / 2868)),
-              width: Math.round(1040 * s),
+              width: Math.round(1040 * sx),
               borderBottom: `${Math.max(1.5, 1.5 * s)}px solid rgba(140, 138, 133, 0.55)`,
             }}
           >
@@ -461,7 +473,7 @@ export function JapandiBackdrop({
               >
                 <div
                   style={{
-                    width: Math.round(256 * s),
+                    width: Math.round(256 * sx),
                     flexShrink: 0,
                     fontFamily: "var(--font-kaku), sans-serif",
                     fontWeight: 500,
@@ -491,7 +503,7 @@ export function JapandiBackdrop({
           <div
             style={{
               position: "absolute",
-              left: Math.round(108 * s),
+              left: Math.round(108 * sx),
               top: Math.round(2310 * (cH / 2868)),
             }}
           >
@@ -525,7 +537,7 @@ export function JapandiBackdrop({
             uid={`closer-cup-${index}`}
             style={{
               position: "absolute",
-              left: Math.round(530 * s),
+              left: Math.round(cW - 790 * s),
               top: shelfTop - Math.round(740 * s * (344 / 420)),
             }}
           />
@@ -554,12 +566,19 @@ export function JapandiForegroundObject({
   if (slide.inverted || slide.layout === "device-top" || slide.layout === "no-device" || slide.layout === "feature-graphic") {
     return null;
   }
-  const s = cW / 1320;
-  const shelfTop = Math.round(2727 * (cH / 2868));
-  const cupW = Math.round(404 * s);
+  const isWide = cW > cH;
+  const s = (isWide ? Math.min(cW, cH) : Math.min(cW, cH * 0.48)) / 1320;
+  const shelfTop = isWide
+    ? Math.round(cH * (cW === 5244 ? 0.548 : 0.701))
+    : Math.round(2727 * (cH / 2868));
+  const cupW = isWide ? Math.round(190 * s) : Math.round(404 * s);
   const cupFootY = Math.round(cupW * (344 / 420));
   const phoneOnRight = (deviceX ?? 0) > cW * 0.14;
-  const left = phoneOnRight ? Math.round(18 * s) : Math.round(902 * s);
+  const left = isWide
+    ? Math.max(80, Math.round((deviceX ?? cW * 0.5) - cupW * 0.78))
+    : phoneOnRight
+      ? Math.round(18 * s)
+      : Math.round(cW - 418 * s);
 
   return (
     <div

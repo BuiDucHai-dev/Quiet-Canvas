@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE } from "./locale";
-import { DEFAULT_SCREENSHOT_FONT_ID, DEFAULT_THEME_ID, PLATFORM_DEVICES, PROJECT_SCHEMA_VERSION } from "./constants";
+import { PLATFORM_DEVICES, PROJECT_SCHEMA_VERSION } from "./constants";
 import type { Device, Platform, ProjectState, Slide } from "./types";
 
 let _id = 0;
@@ -7,71 +7,197 @@ export const nid = () => `s_${Date.now().toString(36)}_${(_id++).toString(36)}`;
 
 const en = (s: string) => ({ [DEFAULT_LOCALE]: s });
 
-function makeStarterSlides(): Slide[] {
+function iphoneQuietCanvas(): Slide[] {
   return [
     {
-      id: nid(),
+      id: "qc_iphone_1",
       layout: "hero",
-      label: en("MEET YOUR APP"),
-      headline: en("Sell one\nidea per slide."),
-      screenshot: "",
+      label: en("QUIET CANVAS · SANCTUARY"),
+      headline: en("Color at your\nown pace."),
+      screenshot: "/screenshots/apple/iphone/en/01.png",
+      transforms: {
+        caption: { x: 100, y: 157, width: 912, height: 513, rotation: 0, zIndex: 4 },
+        device: { x: 64, y: 716, width: 990, height: 2017, rotation: 0, zIndex: 3 },
+      },
+      typography: { headlineScale: 0.95 },
     },
     {
-      id: nid(),
+      id: "qc_iphone_2",
       layout: "device-bottom",
-      label: en("FEATURE 01"),
-      headline: en("Your headline\nlives here."),
-      screenshot: "",
+      label: en("PAINT BY NUMBER · GUIDED"),
+      headline: en("One gentle stroke\nat a time."),
+      screenshot: "/screenshots/apple/iphone/en/02.png",
+      transforms: {
+        caption: { x: 100, y: 147, width: 928, height: 533, rotation: 0, zIndex: 4 },
+        device: { x: 266, y: 716, width: 990, height: 2017, rotation: 0, zIndex: 3 },
+      },
+      typography: { headlineScale: 0.95 },
     },
     {
-      id: nid(),
-      layout: "two-devices",
-      label: en("FEATURE 02"),
-      headline: en("Show two\nscreens at once."),
-      screenshot: "",
-      screenshotSecondary: "",
-    },
-    {
-      id: nid(),
+      id: "qc_iphone_3",
       layout: "device-top",
-      label: en("FEATURE 03"),
-      headline: en("Flip the contrast\nfor visual rhythm."),
-      screenshot: "",
-      inverted: true,
+      label: en("CURATED LIBRARY · 8 THEMES"),
+      headline: en("Ninety-six worlds,\ndrawn with care."),
+      screenshot: "/screenshots/apple/iphone/en/03.png",
+      transforms: {
+        device: { x: 230, y: 150, width: 990, height: 2017, rotation: 0, zIndex: 3 },
+        caption: { x: 100, y: 2213, width: 948, height: 567, rotation: 0, zIndex: 4 },
+      },
+      typography: { headlineScale: 0.75 },
     },
     {
-      id: nid(),
+      id: "qc_iphone_4",
+      layout: "device-bottom",
+      label: en("DAILY RHYTHM · STREAKS"),
+      headline: en("A calm habit,\nkept daily."),
+      screenshot: "/screenshots/apple/iphone/en/04.png",
+      inverted: true,
+      transforms: {
+        caption: { x: 100, y: 160, width: 880, height: 413, rotation: 0, zIndex: 4 },
+        device: { x: 64, y: 716, width: 990, height: 2017, rotation: 0, zIndex: 3 },
+      },
+      typography: { headlineScale: 0.9 },
+    },
+    {
+      id: "qc_iphone_5",
+      layout: "device-bottom",
+      label: en("YOUR GALLERY · MY WORKS"),
+      headline: en("Every piece,\nkept close."),
+      screenshot: "/screenshots/apple/iphone/en/05.png",
+      transforms: {
+        caption: { x: 100, y: 210, width: 894, height: 460, rotation: 0, zIndex: 4 },
+        device: { x: 266, y: 716, width: 990, height: 2017, rotation: 0, zIndex: 3 },
+      },
+      typography: { headlineScale: 0.9 },
+    },
+    {
+      id: "qc_iphone_6",
       layout: "no-device",
-      label: en("MORE"),
-      headline: en("And so\nmuch more."),
-      screenshot: "",
+      label: en("QUIET CANVAS · FOR IPHONE & IPAD"),
+      headline: en("Only what you\nneed."),
+      screenshot: "/screenshots/apple/iphone/en/06.png",
+      transforms: {
+        caption: { x: 100, y: 210, width: 1080, height: 480, rotation: 0, zIndex: 4 },
+      },
     },
   ];
 }
 
-function ipadStarter(): Slide[] {
+function ipadQuietCanvas(): Slide[] {
   return [
     {
-      id: nid(),
+      id: "qc_ipad_1",
       layout: "hero",
-      label: en("MEET YOUR APP"),
-      headline: en("Made for\nthe big screen."),
-      screenshot: "",
+      label: en("QUIET CANVAS · SANCTUARY"),
+      headline: en("Color at your\nown pace."),
+      screenshot: "/screenshots/apple/ipad/en/01.png",
+      transforms: {
+        caption: { x: 156, y: 145, width: 1360, height: 460, rotation: 0, zIndex: 4 },
+        device: { x: 140, y: 771, width: 1420, height: 1846, rotation: 0, zIndex: 3 },
+      },
     },
     {
-      id: nid(),
+      id: "qc_ipad_2",
       layout: "device-bottom",
-      label: en("FEATURE 01"),
-      headline: en("Built for\nfocus."),
-      screenshot: "",
+      label: en("PAINT BY NUMBER · GUIDED"),
+      headline: en("One gentle stroke\nat a time."),
+      screenshot: "/screenshots/apple/ipad/en/02.png",
+      transforms: {
+        caption: { x: 156, y: 145, width: 1360, height: 450, rotation: 0, zIndex: 4 },
+        device: { x: 504, y: 771, width: 1420, height: 1846, rotation: 0, zIndex: 3 },
+      },
     },
     {
-      id: nid(),
+      id: "qc_ipad_3",
       layout: "device-top",
-      label: en("FEATURE 02"),
-      headline: en("Always within reach."),
-      screenshot: "",
+      label: en("CURATED LIBRARY · 8 THEMES"),
+      headline: en("Ninety-six worlds,\ndrawn with care."),
+      screenshot: "/screenshots/apple/ipad/en/03.png",
+      transforms: {
+        device: { x: 380, y: 140, width: 1420, height: 1846, rotation: 0, zIndex: 3 },
+        caption: { x: 156, y: 2226, width: 1360, height: 440, rotation: 0, zIndex: 4 },
+      },
+    },
+    {
+      id: "qc_ipad_4",
+      layout: "device-bottom",
+      label: en("DAILY RHYTHM · STREAKS"),
+      headline: en("A calm habit,\nkept daily."),
+      screenshot: "/screenshots/apple/ipad/en/04.png",
       inverted: true,
+      transforms: {
+        caption: { x: 156, y: 145, width: 1360, height: 450, rotation: 0, zIndex: 4 },
+        device: { x: 140, y: 771, width: 1420, height: 1846, rotation: 0, zIndex: 3 },
+      },
+    },
+    {
+      id: "qc_ipad_5",
+      layout: "device-bottom",
+      label: en("YOUR GALLERY · MY WORKS"),
+      headline: en("Every piece,\nkept close."),
+      screenshot: "/screenshots/apple/ipad/en/05.png",
+      transforms: {
+        caption: { x: 156, y: 145, width: 1360, height: 450, rotation: 0, zIndex: 4 },
+        device: { x: 504, y: 771, width: 1420, height: 1846, rotation: 0, zIndex: 3 },
+      },
+    },
+    {
+      id: "qc_ipad_6",
+      layout: "no-device",
+      label: en("QUIET CANVAS · FOR IPHONE & IPAD"),
+      headline: en("Only what you\nneed."),
+      screenshot: "/screenshots/apple/ipad/en/06.png",
+      transforms: {
+        caption: { x: 156, y: 160, width: 1600, height: 480, rotation: 0, zIndex: 4 },
+      },
+    },
+  ];
+}
+
+function creativeUniversalQuietCanvas(): Slide[] {
+  return [
+    {
+      id: "qc_creative_universal_1",
+      layout: "split-landscape",
+      label: en("QUIET CANVAS · SANCTUARY"),
+      headline: en("Color at your\nown pace."),
+      screenshot: "/screenshots/apple/iphone/en/02.png",
+      transforms: {
+        caption: { x: 1940, y: 740, width: 760, height: 620, rotation: 0, zIndex: 4 },
+        device: { x: 2740, y: 680, width: 462, height: 941, rotation: 0, zIndex: 3 },
+      },
+    },
+  ];
+}
+
+function creativeHeaderQuietCanvas(): Slide[] {
+  return [
+    {
+      id: "qc_creative_header_1",
+      layout: "split-landscape",
+      label: en("QUIET CANVAS · SANCTUARY"),
+      headline: en("Color at your\nown pace."),
+      screenshot: "/screenshots/apple/iphone/en/02.png",
+      transforms: {
+        caption: { x: 1120, y: 540, width: 900, height: 500, rotation: 0, zIndex: 4 },
+        device: { x: 2150, y: 496, width: 325, height: 662, rotation: 0, zIndex: 3 },
+      },
+    },
+  ];
+}
+
+function creativeSearchQuietCanvas(): Slide[] {
+  return [
+    {
+      id: "qc_creative_search_1",
+      layout: "split-landscape",
+      label: en("QUIET CANVAS · SANCTUARY"),
+      headline: en("Color at your\nown pace."),
+      screenshot: "/screenshots/apple/iphone/en/02.png",
+      transforms: {
+        caption: { x: 880, y: 840, width: 1140, height: 660, rotation: 0, zIndex: 4 },
+        device: { x: 2180, y: 780, width: 500, height: 1019, rotation: 0, zIndex: 3 },
+      },
     },
   ];
 }
@@ -79,26 +205,18 @@ function ipadStarter(): Slide[] {
 function tvStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("MEET YOUR APP"), headline: en("Made for\nthe living room."), screenshot: "" },
-    { id: nid(), layout: "split-landscape", label: en("FEATURE 01"), headline: en("One idea\nper screen."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Flip the contrast."), screenshot: "", inverted: true },
-    { id: nid(), layout: "no-device", label: en("MORE"), headline: en("And so\nmuch more."), screenshot: "" },
   ];
 }
 
-// Short headlines: the watch canvas is only 422 px wide.
 function watchStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("MEET YOUR APP"), headline: en("On your\nwrist."), screenshot: "" },
-    { id: nid(), layout: "device-bottom", label: en("FEATURE 01"), headline: en("One glance.\nDone."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Always\nwith you."), screenshot: "", inverted: true },
   ];
 }
 
 function carplayStarter(): Slide[] {
   return [
     { id: nid(), layout: "split-landscape", label: en("CARPLAY"), headline: en("Eyes on\nthe road."), screenshot: "" },
-    { id: nid(), layout: "device-bottom", label: en("FEATURE 01"), headline: en("Everything, one tap away."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Made for every drive."), screenshot: "", inverted: true },
   ];
 }
 
@@ -111,77 +229,36 @@ function tabletStarter(kind: "7" | "10"): Slide[] {
       headline: en(kind === "7" ? "Pocket-sized\npower." : "Made for\nthe big screen."),
       screenshot: "",
     },
-    {
-      id: nid(),
-      layout: "split-landscape",
-      label: en("FEATURE 01"),
-      headline: en("Wide canvas,\nbigger ideas."),
-      screenshot: "",
-    },
   ];
 }
 
-// Mac is contained like the TV, so "hero" and "device-bottom" would look alike;
-// the split and two-window slides give the wide canvas its rhythm instead.
 function macStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("MEET YOUR APP"), headline: en("Made for\nyour Mac."), screenshot: "" },
-    { id: nid(), layout: "split-landscape", label: en("FEATURE 01"), headline: en("Everything in\none window."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("One shortcut away."), screenshot: "", inverted: true },
-    { id: nid(), layout: "two-devices", label: en("FEATURE 03"), headline: en("Work across windows."), screenshot: "", screenshotSecondary: "" },
-    { id: nid(), layout: "no-device", label: en("MORE"), headline: en("And so\nmuch more."), screenshot: "" },
   ];
 }
 
-// iPhone Duo. The outer display is a short, wide phone (1398 × 2034) and the
-// inner display opens to about the shape of A-series paper (2853 × 2007), so
-// each gets its own deck. Opening the phone held upright gives the inner display
-// in landscape, so that deck leads; it opens on the two-pane view and pairs the
-// closed and open phone. "Two devices" on a Duo deck is that folded + open pair.
-// See iphone-duo.md beside SKILL.md.
 function duoOuterStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("MEET YOUR APP"), headline: en("Everything,\none hand."), screenshot: "" },
-    { id: nid(), layout: "device-bottom", label: en("FEATURE 01"), headline: en("One idea\nper screen."), screenshot: "" },
-    { id: nid(), layout: "two-devices", label: en("OPEN IT"), headline: en("Open it for\nthe full view."), screenshot: "", screenshotSecondary: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Flip the contrast."), screenshot: "", inverted: true },
-    { id: nid(), layout: "no-device", label: en("MORE"), headline: en("And so\nmuch more."), screenshot: "" },
   ];
 }
 
 function duoOuterLandscapeStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("TURN IT"), headline: en("Made for the wide view."), screenshot: "" },
-    { id: nid(), layout: "split-landscape", label: en("FEATURE 01"), headline: en("One idea\nper screen."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Flip the contrast."), screenshot: "", inverted: true },
   ];
 }
 
 function duoInnerStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("UNFOLD IT"), headline: en("Room for\nthe whole view."), screenshot: "" },
-    { id: nid(), layout: "device-bottom", label: en("FEATURE 01"), headline: en("One idea\nper screen."), screenshot: "" },
-    { id: nid(), layout: "two-devices", label: en("FOLDED + OPEN"), headline: en("Turn it, open it,\nkeep going."), screenshot: "", screenshotSecondary: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 02"), headline: en("Flip the contrast."), screenshot: "", inverted: true },
   ];
 }
 
-// Landscape copy runs across the top in one line; the device is the hero.
 function duoInnerLandscapeStarter(): Slide[] {
   return [
     { id: nid(), layout: "hero", label: en("UNFOLD IT"), headline: en("Lead with the two-pane view."), screenshot: "" },
-    { id: nid(), layout: "two-devices", label: en("FOLDED + OPEN"), headline: en("Same moment, closed and open."), screenshot: "", screenshotSecondary: "" },
-    { id: nid(), layout: "split-landscape", label: en("FEATURE 02"), headline: en("One idea\nper screen."), screenshot: "" },
-    { id: nid(), layout: "device-top", label: en("FEATURE 03"), headline: en("Show what only the wide screen can."), screenshot: "", inverted: true },
-    { id: nid(), layout: "no-device", label: en("MORE"), headline: en("And so much more."), screenshot: "" },
-  ];
-}
-
-// App Store creatives: one short brand message each, never a screenshot
-// headline. The layout sits inside Apple's art safe area.
-function creativeStarter(): Slide[] {
-  return [
-    { id: nid(), layout: "split-landscape", label: en("NEW"), headline: en("Your app,\nat a glance."), screenshot: "" },
   ];
 }
 
@@ -191,7 +268,7 @@ function fgStarter(): Slide[] {
       id: nid(),
       layout: "feature-graphic",
       label: {},
-      headline: en("Your tagline goes here."),
+      headline: en("Color at your own pace."),
       screenshot: "",
     },
   ];
@@ -199,19 +276,19 @@ function fgStarter(): Slide[] {
 
 export const DEFAULT_PROJECT: ProjectState = {
   schemaVersion: PROJECT_SCHEMA_VERSION,
-  appName: "My App",
-  themeId: DEFAULT_THEME_ID,
-  fontId: DEFAULT_SCREENSHOT_FONT_ID,
+  appName: "Quiet Canvas",
+  themeId: "quiet-japandi",
+  fontId: "template-serif",
   connectedCanvas: true,
   locales: [DEFAULT_LOCALE],
   locale: DEFAULT_LOCALE,
   device: "iphone",
   orientation: "portrait",
-  appIcon: "",
+  appIcon: "/app-icon.png",
   slidesByDevice: {
-    iphone: makeStarterSlides(),
-    android: makeStarterSlides(),
-    ipad: ipadStarter(),
+    iphone: iphoneQuietCanvas(),
+    android: iphoneQuietCanvas(),
+    ipad: ipadQuietCanvas(),
     tvos: tvStarter(),
     watchos: watchStarter(),
     carplay: carplayStarter(),
@@ -223,9 +300,9 @@ export const DEFAULT_PROJECT: ProjectState = {
     "duo-outer-landscape": duoOuterLandscapeStarter(),
     "duo-inner": duoInnerStarter(),
     "duo-inner-landscape": duoInnerLandscapeStarter(),
-    "creative-universal": creativeStarter(),
-    "creative-header": creativeStarter(),
-    "creative-search": creativeStarter(),
+    "creative-universal": creativeUniversalQuietCanvas(),
+    "creative-header": creativeHeaderQuietCanvas(),
+    "creative-search": creativeSearchQuietCanvas(),
   },
 };
 

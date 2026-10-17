@@ -173,7 +173,7 @@ final class UserDefaultsProgressRepository: ProgressRepository {
     }
 
     func loadPremium() -> Bool {
-        defaults.bool(forKey: "premium")
+        true // ponytail: free-for-all build; restore defaults.bool(forKey: "premium") when StoreKit ships
     }
 
     func savePremium(_ premium: Bool) {

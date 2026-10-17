@@ -30,6 +30,13 @@ struct PaywallView: View {
                             .buttonStyle(SecondaryButton()).padding(.horizontal, 20)
                     }
                     #endif
+                    HStack(spacing: 16) {
+                        Link("Terms of Use", destination: LegalLinks.terms)
+                        Text("•")
+                        Link("Privacy Policy", destination: LegalLinks.privacy)
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.ink2)
                 }
                 .padding(.bottom, 24)
             }

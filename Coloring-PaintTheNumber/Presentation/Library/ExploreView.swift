@@ -178,8 +178,10 @@ struct ExploreView: View {
                     .accessibilityLabel(isFav ? "Unpin theme from Home" : "Pin theme to Home")
                 }
 
-                filterChip(title: "Free", icon: "lock.open.fill", active: freeOnly) {
-                    freeOnly.toggle()
+                if !store.premium {
+                    filterChip(title: "Free", icon: "lock.open.fill", active: freeOnly) {
+                        freeOnly.toggle()
+                    }
                 }
                 ForEach(Catalog.Difficulty.allCases, id: \.self) { level in
                     filterChip(title: level.label, icon: nil, active: difficulty == level) {

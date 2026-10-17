@@ -59,6 +59,7 @@ import {
 } from "./device-frames";
 import { ImageElementCanvas } from "./image-element-canvas";
 import { CalloutLoupe, DeviceDepth, SceneBackdrop, shade } from "./scene-layers";
+import { JapandiBackdrop, JapandiForegroundObject, getJapandiSubhead } from "./japandi-layers";
 
 type FrameComp = React.ComponentType<{
   src: string;
@@ -312,6 +313,38 @@ function EditableText({
 
 // ---------- Caption (label + headline) ----------
 
+function renderHeadlineWithKenten(text: string, kentenColor: string): React.ReactNode {
+  if (!text) return null;
+  const lines = text.split("\n");
+  const lastLineIdx = lines.length - 1;
+  return lines.map((line, li) => {
+    if (li !== lastLineIdx) {
+      return (
+        <React.Fragment key={li}>
+          {line}
+          {"\n"}
+        </React.Fragment>
+      );
+    }
+    const match = line.match(/^(.*?)([A-Za-z]+)(\.?)$/);
+    if (!match) return <React.Fragment key={li}>{line}</React.Fragment>;
+    const [, prefix, word, trailing] = match;
+    return (
+      <React.Fragment key={li}>
+        {prefix}
+        <span style={{ ["--kenten-color" as string]: kentenColor }}>
+          {word.split("").map((ch, ci) => (
+            <span key={ci} className="japandi-kenten-char">
+              {ch}
+            </span>
+          ))}
+        </span>
+        {trailing}
+      </React.Fragment>
+    );
+  });
+}
+
 function Caption({
   cW,
   cH,
@@ -325,6 +358,7 @@ function Caption({
   scene,
   onFocus,
   typeUnit,
+  slideIndex = 0,
 }: {
   cW: number;
   cH: number;
@@ -339,49 +373,113 @@ function Caption({
   onFocus?: () => void;
   /** Typography unit; defaults to the canvas's shorter side. */
   typeUnit?: number;
+  slideIndex?: number;
 }) {
+  const [editingHeadline, setEditingHeadline] = React.useState(false);
   const { fg, accent } = slideColors(theme, { inverted, backgroundColor: slide.backgroundColor });
   const { labelScale, headlineScale } = slideFontScales(slide);
-  // Scale typography off the *shorter* dimension so landscape layouts don't
-  // produce headlines so tall they overlap the device frame.
-  const unit = typeUnit ?? Math.min(cW, cH);
+  const unit = typeUnit ?? (cW < cH ? Math.min(cW, cH * 0.48) : Math.min(cW, cH));
+  const isJapandi = theme.id === "quiet-japandi";
+  const effectiveAlign = isJapandi ? "left" : align;
+  const headlineValue = pickText(slide.headline, locale);
+  const kentenColor = inverted ? "#C9A97E" : "#7A5A34";
+  const subhead = isJapandi && slideIndex === 0 ? getJapandiSubhead(slideIndex) : "";
+
+  const headlineStyle: React.CSSProperties = isJapandi
+    ? {
+        fontFamily: "var(--font-mincho), Georgia, serif",
+        fontSize: unit * 0.116 * headlineScale * scene.headlineScale,
+        fontWeight: 500,
+        lineHeight: 1.05,
+        letterSpacing: "-0.012em",
+        color: inverted ? "#F3F0EA" : "#1E1D1B",
+      }
+    : {
+        fontSize: unit * 0.092 * headlineScale * scene.headlineScale,
+        fontWeight: scene.headlineWeight,
+        lineHeight: 0.96,
+        letterSpacing: (scene.headlineCase === "upper" ? unit * 0.0015 : -unit * 0.001) * headlineScale,
+        textTransform: scene.headlineCase === "upper" ? "uppercase" : undefined,
+        color: fg,
+      };
+
   return (
-    // "start" rather than "left" so a left-set caption hugs the right edge in RTL.
-    <div style={{ textAlign: align === "left" ? "start" : align, position: "relative", width: "100%" }}>
+    <div style={{ textAlign: effectiveAlign === "left" ? "start" : effectiveAlign, position: "relative", width: "100%" }}>
       <EditableText
         value={pickText(slide.label, locale)}
         editable={editable}
         onChange={edit?.onLabelChange}
         onFocus={onFocus}
         placeholder="LABEL"
-        style={{
-          // Floor keeps the label legible on the 422×514 Apple Watch canvas;
-          // the per-slide scale is applied on top of the floored base.
-          fontSize: Math.max(unit * 0.028, 16) * labelScale,
-          fontWeight: 600,
-          letterSpacing: Math.max(unit * 0.0015, 0.8) * labelScale,
-          color: accent,
-          textTransform: "uppercase",
-          marginBottom: unit * 0.018,
-          minHeight: unit * 0.03,
-        }}
+        style={
+          isJapandi
+            ? {
+                fontFamily: "var(--font-kaku), sans-serif",
+                fontSize: Math.max(unit * 0.024, 16) * labelScale,
+                fontWeight: 500,
+                letterSpacing: "0.32em",
+                color: inverted ? "#B8B4AC" : "#4E4B46",
+                textTransform: "uppercase",
+                marginBottom: unit * 0.024,
+                minHeight: unit * 0.03,
+              }
+            : {
+                fontSize: Math.max(unit * 0.028, 16) * labelScale,
+                fontWeight: 600,
+                letterSpacing: Math.max(unit * 0.0015, 0.8) * labelScale,
+                color: accent,
+                textTransform: "uppercase",
+                marginBottom: unit * 0.018,
+                minHeight: unit * 0.03,
+              }
+        }
       />
-      <EditableText
-        value={pickText(slide.headline, locale)}
-        editable={editable}
-        multiline
-        onChange={edit?.onHeadlineChange}
-        onFocus={onFocus}
-        placeholder="Headline goes here"
-        style={{
-          fontSize: unit * 0.092 * headlineScale * scene.headlineScale,
-          fontWeight: scene.headlineWeight,
-          lineHeight: 0.96,
-          letterSpacing: (scene.headlineCase === "upper" ? unit * 0.0015 : -unit * 0.001) * headlineScale,
-          textTransform: scene.headlineCase === "upper" ? "uppercase" : undefined,
-          color: fg,
-        }}
-      />
+      {isJapandi && !editingHeadline ? (
+        <div
+          dir="auto"
+          onClick={() => {
+            if (editable) {
+              setEditingHeadline(true);
+              onFocus?.();
+            }
+          }}
+          style={{
+            ...headlineStyle,
+            whiteSpace: "pre-wrap",
+            cursor: editable ? "text" : "default",
+          }}
+        >
+          {renderHeadlineWithKenten(headlineValue, kentenColor)}
+        </div>
+      ) : (
+        <EditableText
+          value={headlineValue}
+          editable={editable}
+          multiline
+          onChange={edit?.onHeadlineChange}
+          onFocus={() => {
+            setEditingHeadline(true);
+            onFocus?.();
+          }}
+          style={headlineStyle}
+          placeholder="Headline goes here"
+        />
+      )}
+      {isJapandi && subhead && (
+        <div
+          style={{
+            marginTop: unit * 0.056,
+            fontFamily: "var(--font-kaku), sans-serif",
+            fontSize: unit * 0.03,
+            fontWeight: 400,
+            lineHeight: 1.35,
+            letterSpacing: "0.02em",
+            color: inverted ? "#B8B4AC" : "#4E4B46",
+          }}
+        >
+          {subhead}
+        </div>
+      )}
     </div>
   );
 }
@@ -821,6 +919,7 @@ export function SlideCanvas({
         boundsW={cW}
         boundsH={cH}
         allowCrossScreen={false}
+        stripIndex={stripIndex}
       />
     </div>
   );
@@ -959,6 +1058,7 @@ export function DeckCanvas({
             boundsW={connectedCanvas ? totalW : cW}
             boundsH={cH}
             allowCrossScreen={connectedCanvas}
+            stripIndex={stripStart + index}
           />
         );
         if (connectedCanvas) return elements;
@@ -1075,6 +1175,20 @@ function SlideBackground({
 }) {
   const inverted = !!slide.inverted;
   const colors = slideColors(theme, slide);
+  if (theme.id === "quiet-japandi" && !slide.backgroundColor) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
+          color: colors.fg,
+        }}
+      >
+        <JapandiBackdrop slide={slide} cW={cW} cH={cH} index={index} />
+      </div>
+    );
+  }
   return (
     <div
       style={{
@@ -1261,6 +1375,7 @@ function SlideElements({
   boundsW,
   boundsH,
   allowCrossScreen,
+  stripIndex = 0,
 }: {
   slide: Slide;
   scene: Scene;
@@ -1277,11 +1392,13 @@ function SlideElements({
   boundsW: number;
   boundsH: number;
   allowCrossScreen: boolean;
+  stripIndex?: number;
 }) {
   const screenshot = resolveScreenshot(slide.screenshot, locale);
   const screenshotSecondary = resolveScreenshot(slide.screenshotSecondary, locale);
   const { cW, cH, Frame, frameAspect, defaults, typeUnit } = getSlideGeometry(slide, device, orientation);
   const inverted = !!slide.inverted;
+  const isJapandi = theme.id === "quiet-japandi";
   const colors = slideColors(theme, slide);
   const captionRect = rectFor("caption", slide, defaults);
   const deviceRect = rectFor("device", slide, defaults);
@@ -1317,6 +1434,7 @@ function SlideElements({
         scene={scene}
         typeUnit={typeUnit}
         onFocus={() => edit?.onSelectElement?.("caption")}
+        slideIndex={stripIndex}
       />
     );
     return (
@@ -1384,13 +1502,37 @@ function SlideElements({
         selected={selectedElementId === id}
         onSelect={() => edit?.onSelectElement?.(id)}
       >
-        <DeviceDepth scene={companion ? { ...scene, tilt: 0 } : scene} cW={cW} accent={theme.accent}>
-          <DeviceFrame
-            src={src}
-            hideEmpty={hideEmpty}
-            style={{ width: "100%", height: "100%", ...extraStyle }}
-          />
-        </DeviceDepth>
+        {isJapandi ? (
+          <div
+            className={inverted ? "japandi-pshadow-dark" : "japandi-pshadow"}
+            style={{ width: "100%", height: "100%", position: "relative" }}
+          >
+            <DeviceFrame
+              src={src}
+              hideEmpty={hideEmpty}
+              style={{ width: "100%", height: "100%", ...extraStyle }}
+            />
+            <div
+              className="japandi-contact"
+              aria-hidden
+              style={{
+                position: "absolute",
+                left: "7%",
+                right: "7%",
+                bottom: -Math.round(cH * 0.0063),
+                height: Math.round(cH * 0.0125),
+              }}
+            />
+          </div>
+        ) : (
+          <DeviceDepth scene={companion ? { ...scene, tilt: 0 } : scene} cW={cW} accent={theme.accent}>
+            <DeviceFrame
+              src={src}
+              hideEmpty={hideEmpty}
+              style={{ width: "100%", height: "100%", ...extraStyle }}
+            />
+          </DeviceDepth>
+        )}
       </Movable>
     );
   }
@@ -1547,6 +1689,28 @@ function SlideElements({
               { opacity: 0.85 },
             ))}
       {deviceRect && renderDevice("device", deviceRect, screenshot)}
+      {isJapandi && (
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: screenX,
+            top: 0,
+            width: cW,
+            height: cH,
+            pointerEvents: "none",
+            zIndex: 6,
+          }}
+        >
+          <JapandiForegroundObject
+            slide={slide}
+            cW={cW}
+            cH={cH}
+            index={stripIndex}
+            deviceX={deviceRect?.x}
+          />
+        </div>
+      )}
       {renderCaption()}
       {calloutRect && deviceRect && renderCallout(calloutRect, deviceRect.width)}
       {(slide.imageElements || []).map(renderImageElement)}

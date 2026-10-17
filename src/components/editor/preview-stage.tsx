@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Maximize2, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CREATIVE_SPECS, DEVICE_LABEL, centredCrop, layoutLabel } from "@/lib/constants";
+import { CREATIVE_SPECS, DEVICE_LABEL, centredCrop, getExportSizes, layoutLabel } from "@/lib/constants";
 import type {
   Device,
   ElementId,
@@ -64,6 +64,7 @@ export function PreviewStage({
   const [fitScale, setFitScale] = React.useState(0.2);
   const [zoom, setZoom] = React.useState(1);
   const { cW, cH } = getCanvas(device, orientation);
+  const primaryExport = getExportSizes(device, orientation)[0] ?? { w: cW, h: cH };
   const totalW = Math.max(1, slides.length) * cW;
   const scale = fitScale * zoom;
   const activeIndex = Math.max(0, slides.findIndex((slide) => slide.id === activeSlideId));
@@ -215,7 +216,7 @@ export function PreviewStage({
       )}
 
       <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-md bg-background/85 px-1.5 py-1 text-[10px] tabular-nums text-muted-foreground shadow-sm backdrop-blur">
-        <span className="px-1">{slides.length}× {cW}×{cH}</span>
+        <span className="px-1">{slides.length}× {primaryExport.w}×{primaryExport.h}</span>
         <span aria-hidden className="text-border">|</span>
         <Button
           type="button"

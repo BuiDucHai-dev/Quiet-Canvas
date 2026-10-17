@@ -32,8 +32,10 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section { premiumCard }
-                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+                if !store.premium {
+                    Section { premiumCard }
+                        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+                }
                 Section("Painting") {
                     Picker(selection: $numberSize) {
                         Text("Normal").tag(0)
@@ -44,7 +46,7 @@ struct SettingsView: View {
                     if highlight {
                         VStack(alignment: .leading, spacing: 12) {
                             row("paintpalette", Color(hex: highlightHex), "Highlight color")
-                            HStack(spacing: 10) {
+                            HStack(spacing: 0) {
                                 ForEach(Self.highlightPresets, id: \.hex) { preset in
                                     let selected = highlightHex.caseInsensitiveCompare(preset.hex) == .orderedSame
                                     Button {
@@ -55,30 +57,28 @@ struct SettingsView: View {
                                             Circle().strokeBorder(.black.opacity(0.15), lineWidth: 1)
                                             if selected {
                                                 Image(systemName: "checkmark")
-                                                    .font(.system(size: 14, weight: .bold))
+                                                    .font(.system(size: 13, weight: .bold))
                                                     .foregroundStyle(.white)
                                             }
                                         }
-                                        .frame(width: 38, height: 38)
-                                        .padding(4)
+                                        .frame(width: 34, height: 34)
+                                        .padding(3)
                                         .overlay(Circle().strokeBorder(.ink, lineWidth: 2).opacity(selected ? 1 : 0))
-                                        .frame(minWidth: 48, minHeight: 48)
+                                        .frame(width: 44, height: 44)
                                         .contentShape(Rectangle())
                                     }
                                     .buttonStyle(.pressable)
                                     .accessibilityLabel(preset.name)
                                     .accessibilityAddTraits(selected ? .isSelected : [])
+                                    Spacer(minLength: 0)
                                 }
-                                Spacer(minLength: 4)
                                 ColorPicker("Custom highlight color", selection: customHighlightColor, supportsOpacity: false)
                                     .labelsHidden()
-                                    .scaleEffect(1.15)
-                                    .frame(minWidth: 48, minHeight: 48)
+                                    .frame(width: 44, height: 44)
                                     .accessibilityLabel("Custom highlight color")
                             }
-                            .padding(.leading, 38)
                         }
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 4)
                     }
                     Toggle(isOn: $autoNext) { row("arrow.right", .green, "Auto-pick next color") }
                     Toggle(isOn: $hideDone) { row("eye.slash", .teal, "Hide finished colors") }
@@ -92,6 +92,8 @@ struct SettingsView: View {
                 }
                 Section("Support") {
                     Button { requestReview() } label: { row("star", .yellow, "Rate Quiet Canvas") }
+                    Link(destination: LegalLinks.terms) { row("doc.text", .blue, "Terms of Use") }
+                    Link(destination: LegalLinks.privacy) { row("hand.raised", .indigo, "Privacy Policy") }
                 }
                 Section("Account") {
                     Button(role: .destructive) { confirmReset = true } label: { row("trash", .red, "Reset all progress") }
